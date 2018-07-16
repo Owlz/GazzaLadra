@@ -28,6 +28,11 @@
 			android:name=".activity.SessionActivity"
 			android:label="@string/title_activity_session">
 		</activity>
+		<activity
+			android:name=".activity.QuizActivity"
+			android:label="@string/title_activity_quiz"
+			android:theme="@style/AppTheme">
+		</activity>
 	</application>
 
 </manifest>

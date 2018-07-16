@@ -3,6 +3,8 @@ package it.unisa.tirocinio.gazzaladra;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +16,23 @@ import java.util.List;
 import java.util.Map;
 
 import it.unisa.tirocinio.gazzaladra.database.Session;
+import it.unisa.tirocinio.gazzaladra.database.Topic;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	private Activity activity;
-	private Map<Session, List<String>> sessionCollector;
+	private Map<Session, List<Topic>> sessionCollector;
 	private List<Session> sessions;
 
-	public ExpandableListAdapter(Activity a, List<Session> sessions, Map<Session, List<String>> sessionCollector) {
+	private Drawable passed;
+	private Drawable reject;
+
+	public ExpandableListAdapter(Activity a, List<Session> sessions, Map<Session, List<Topic>> sessionCollector) {
 		this.sessionCollector = sessionCollector;
 		this.activity = a;
 		this.sessions = sessions;
+
+		this.passed = ContextCompat.getDrawable(a.getApplicationContext(), R.drawable.ic_check_green_24dp);
+		this.reject = ContextCompat.getDrawable(a.getApplicationContext(), R.drawable.ic_clear_red_24dp);
 	}
 
 	@Override
@@ -43,7 +52,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		List<String> sc = sessionCollector.get(sessions.get(groupPosition));
+		List<Topic> sc = sessionCollector.get(sessions.get(groupPosition));
 		return sc.get(childPosition);
 	}
 
@@ -71,23 +80,28 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		}
 		TextView item = convertView.findViewById(R.id.sessione);
 		item.setTypeface(null, Typeface.BOLD_ITALIC);
-		item.setText(sessione.getNumSession() + "");
+		item.setText("Sessione " + sessione.getNumSession() + " - " + sessione.getData());
 
 		return convertView;
 	}
 
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		final String quiz = (String) getChild(groupPosition, childPosition);
+		final Topic quiz = (Topic) getChild(groupPosition, childPosition);
 		LayoutInflater inflater = activity.getLayoutInflater();
 
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.child_item, null);
 		}
 
-		TextView quizNome = convertView.findViewById(R.id.sessione);
+		TextView quizNome = convertView.findViewById(R.id.sessioneChild);
+		quizNome.setText(quiz.getName());
+
 		ImageView quizImage = convertView.findViewById(R.id.image);
-		quizNome.setText(quiz);
+		if (quiz.isPassed())
+			quizImage.setImageDrawable(passed);
+		else
+			quizImage.setImageDrawable(reject);
 
 		return convertView;
 	}
@@ -97,7 +111,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		return true;
 	}
 
-	public void setSessions(List<Session> list, Map<Session, List<String>> child) {
+	public void setSessions(List<Session> list, Map<Session, List<Topic>> child) {
 		this.sessions = list;
 		this.sessionCollector = child;
 		notifyDataSetChanged();

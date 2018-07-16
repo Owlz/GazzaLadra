@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {User.class, Session.class}, version = 1)
+@Database(entities = {User.class, Session.class, Topic.class}, version = 1)
 public abstract class UserDB extends RoomDatabase {
 	public abstract UserDAO UserDAO();
 
@@ -19,7 +19,7 @@ public abstract class UserDB extends RoomDatabase {
 							.databaseBuilder(
 									context.getApplicationContext(),
 									UserDB.class,
-									"user-db3")
+									"user-db4")
 							.build();
 
 				}

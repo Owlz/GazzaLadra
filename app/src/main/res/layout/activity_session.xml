@@ -42,18 +42,11 @@
 
 	</android.support.design.widget.AppBarLayout>
 
-	<android.support.v4.widget.NestedScrollView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_gravity="fill_vertical"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-	</android.support.v4.widget.NestedScrollView>
 
 	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 		<ExpandableListView
 			android:layout_width="match_parent"
@@ -63,6 +56,7 @@
 
 		</ExpandableListView>
 	</RelativeLayout>
+
 
 	<include layout="@layout/fab_layout"/>
 </android.support.design.widget.CoordinatorLayout>

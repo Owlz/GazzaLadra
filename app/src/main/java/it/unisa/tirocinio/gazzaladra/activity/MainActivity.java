@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,16 +83,16 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		if (adapter.getItemCount() > 0) {
-			Log.w("MainActivity", ">0");
-			rv.setLayoutManager(new GridLayoutManager(this, 2));
-			warning.setVisibility(View.GONE);
-		} else {
-			Log.w("MainActivity", "== 0");
-			rv.setLayoutManager(null);
-			warning.setVisibility(View.VISIBLE);
-
-		}
+//		if (adapter.getItemCount() > 0) {
+//			Log.w("MainActivity", ">0");
+		rv.setLayoutManager(new GridLayoutManager(this, 2));
+		warning.setVisibility(View.GONE);
+//		} else {
+//			Log.w("MainActivity", "== 0");
+//			rv.setLayoutManager(null);
+//			warning.setVisibility(View.VISIBLE);
+//
+//		}
 		rv.setAdapter(adapter);
 	}
 

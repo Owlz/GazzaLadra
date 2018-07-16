@@ -14,29 +14,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import it.unisa.tirocinio.gazzaladra.ExpandableListAdapter;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.database.Session;
+import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.User;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
 
 public class SessionActivity extends AppCompatActivity {
 	private UserViewModel uvm;
-	private User utente;
 	private ImageView avatar;
 
 	private List<Session> sessioniUtente;
 	private List<String> moltiQuiz;
-	private Map<Session, List<String>> sessionCollector;
+	private Map<Session, List<Topic>> sessionCollector;
 	private ExpandableListView expListView;
+
+	private User utente;
+	private int numSessioniSvolte;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +70,21 @@ public class SessionActivity extends AppCompatActivity {
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int lastSessionNumber = 0;
-				if (sessioniUtente.size() != 0)
-					lastSessionNumber = sessioniUtente.get(sessioniUtente.size() - 1).getNumSession();
+				Session s = new Session(
+						utente.getUid(),
+						numSessioniSvolte++,
+						DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ITALY).format(new Date())
+				);
+				Intent i = new Intent(getApplicationContext(), QuizActivity.class);
+				i.putExtra("session", s);
 
-				uvm.insertSession(new Session(utente.getUid(), lastSessionNumber + 1, "10/10/10"));
+				startActivity(i);
 			}
 		});
 
 		sessioniUtente = new ArrayList<>();
+		sessionCollector = new HashMap<>();
+
 		expListView = findViewById(R.id.expandableListView);
 		final ExpandableListAdapter adapter = new ExpandableListAdapter(this, sessioniUtente, sessionCollector);
 		expListView.setAdapter(adapter);
@@ -83,18 +94,16 @@ public class SessionActivity extends AppCompatActivity {
 			@Override
 			public void onChanged(@Nullable List<Session> session) {
 				sessioniUtente = session;
-				sessionCollector = new HashMap<Session, List<String>>();
+				numSessioniSvolte = session.size();
+
+				sessionCollector = new HashMap<>();
+
 				for (Session s : sessioniUtente) {
-					List<String> mom = new ArrayList<>();
-					mom.add("quiz1");
-					mom.add("quiz2");
-					mom.add("quiz3");
+					List<Topic> mom = uvm.getTopicBySession(s.getUid()).getValue();
 					sessionCollector.put(s, mom);
 				}
 				adapter.setSessions(sessioniUtente, sessionCollector);
 
-				if (sessioniUtente.size() != 0)
-					Toast.makeText(SessionActivity.this, sessioniUtente.get(sessioniUtente.size() - 1).toString(), Toast.LENGTH_SHORT).show();
 			}
 		});
 

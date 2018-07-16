@@ -31,24 +31,25 @@
 			android:paddingLeft="8dp"
 			android:paddingRight="8dp"
 			android:paddingTop="2dp"
+			android:paddingBottom="8dp"
 			android:textAlignment="viewStart"
 			android:textAllCaps="false"
 			android:textColor="#222"
 			android:textSize="22sp"
 			android:textStyle="bold|italic"
-			tools:text="Luca Di Luccio"/>
+			tools:text="placeholder"/>
 
-		<TextView
-			android:id="@+id/desc"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/nome"
-			android:maxLines="3"
-			android:padding="8dp"
-			android:textColor="#666"
-			android:textSize="14sp"
-			android:textStyle="italic"
-			tools:text="3 test effettuati"/>
+		<!--		<TextView
+					android:id="@+id/desc"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/nome"
+					android:maxLines="3"
+					android:padding="8dp"
+					android:textColor="#666"
+					android:textSize="14sp"
+					android:textStyle="italic"
+					tools:text="3 test effettuati"/>-->
 
 	</RelativeLayout>
 </android.support.v7.widget.CardView>

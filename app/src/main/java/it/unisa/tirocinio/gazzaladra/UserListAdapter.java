@@ -22,14 +22,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
 	class UserViewHolder extends RecyclerView.ViewHolder {
 		private final TextView nome;
-		private final TextView desc;
+		//private final TextView desc;
 		private final ImageView im;
 		private User user = null;
 
 		private UserViewHolder(View userView) {
 			super(userView);
 			nome = itemView.findViewById(R.id.nome);
-			desc = itemView.findViewById(R.id.desc);
+			//desc = itemView.findViewById(R.id.desc);
 			im = itemView.findViewById(R.id.img);
 			userView.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -71,7 +71,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 			holder.user = user;
 
 			holder.nome.setText(user.getName() + " " + user.getLastName());
-			holder.desc.setText("4 test effettuati");
+			//holder.desc.setText("4 test effettuati");
 
 			FileInputStream inStream;
 			try {

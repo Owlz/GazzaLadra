@@ -16,6 +16,9 @@ public interface UserDAO {
 	@Insert
 	void insertSession(Session s);
 
+	@Insert
+	void insertTopic(Topic t);
+
 	@Query("DELETE FROM users WHERE uid = :id")
 	void deleteUser(int id);
 
@@ -27,6 +30,9 @@ public interface UserDAO {
 
 	@Query("SELECT * FROM sessions WHERE uidUser = :idUser ORDER BY uid ASC")
 	LiveData<List<Session>> getAllSessionByUser(long idUser);
+
+	@Query("SELECT * FROM topic WHERE uidSession= :idSession ORDER BY uid ASC")
+	LiveData<List<Topic>> getAllTopicBySession(long idSession);
 
 
 }

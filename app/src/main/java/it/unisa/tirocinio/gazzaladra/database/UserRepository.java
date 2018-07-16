@@ -22,6 +22,10 @@ public class UserRepository {
 		return userDAO.getAllSessionByUser(id);
 	}
 
+	public LiveData<List<Topic>> getTopicBySession(long id) {
+		return userDAO.getAllTopicBySession(id);
+	}
+
 	public void insert(User user) {
 		new InsertAsyncTask(userDAO).execute(user);
 	}
@@ -54,6 +58,24 @@ public class UserRepository {
 		@Override
 		protected Void doInBackground(Session... s) {
 			dao.insertSession(s[0]);
+			return null;
+		}
+	}
+
+	public void insertTopic(Topic t) {
+		new InsertTopicAsyncTask(userDAO).execute(t);
+	}
+
+	private class InsertTopicAsyncTask extends AsyncTask<Topic, Void, Void> {
+		private UserDAO dao;
+
+		public InsertTopicAsyncTask(UserDAO dao) {
+			this.dao = dao;
+		}
+
+		@Override
+		protected Void doInBackground(Topic... t) {
+			dao.insertTopic(t[0]);
 			return null;
 		}
 	}
