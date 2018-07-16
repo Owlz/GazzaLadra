@@ -24,13 +24,14 @@ import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
 public abstract class TemplateActivity extends AppCompatActivity implements SensorEventListener, WriteDataCallback {
 
-	private String sessionFolder = "";
-
+	private String sessionFolder = null;
 	protected void setSession(Session s) {
 		sessionFolder = "GazzaLadra" + "/" + s.getUidUser() + "/" + s.getNumSession();
 	}
 
-	public String getSessionFolder() {
+	protected String getSessionFolder() {
+		if (sessionFolder == null || sessionFolder.equals(""))
+			throw new RuntimeException("Impossibile ottenere la cartella, l'hai inizializzata?");
 		return sessionFolder;
 	}
 

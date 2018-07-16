@@ -37,8 +37,9 @@ public class IntermediateFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			scenario = getArguments().getString("scenario");
+		Bundle args = getArguments();
+		if (args != null) {
+			scenario = args.getString("scenario");
 		}
 	}
 
