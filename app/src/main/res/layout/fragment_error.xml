@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:id="@+id/scaduta"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="207dp"
+		android:text="La sessione è scaduta."
+		android:textAlignment="center"
+		android:textColor="@color/textDarkColor"
+		android:textSize="28sp"
+		tools:layout_editor_absoluteX="48dp"
+		tools:layout_editor_absoluteY="186dp"/>
+
+	<Button
+		android:id="@+id/newSession"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginBottom="166dp"
+		android:text="Nuova"
+		android:textSize="24sp"
+		tools:layout_editor_absoluteX="140dp"
+		tools:layout_editor_absoluteY="344dp"/>
+</RelativeLayout>

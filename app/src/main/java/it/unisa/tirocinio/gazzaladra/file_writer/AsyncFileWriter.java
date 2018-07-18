@@ -21,9 +21,8 @@ public class AsyncFileWriter {
 
 		boolean firstVal = true;
 		for (String val : values) {
-			if (val == null) {
-				continue;
-			}
+			if (val == null) continue;
+
 			if (!firstVal) {
 				out.append(",");
 			}
@@ -53,9 +52,10 @@ public class AsyncFileWriter {
 		AsyncTask.execute(new Runnable() {
 			@Override
 			public void run() {
+
 				final String data = parseLines(values);
 
-				final String path_string = Environment.getExternalStorageDirectory().getAbsolutePath() + "/new_folder";
+				final String path_string = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + folderName;
 				final File path = new File(path_string);
 
 				if (!path.exists()) {
@@ -65,6 +65,7 @@ public class AsyncFileWriter {
 				final File file = new File(path, fileName);
 
 				try {
+					file.createNewFile();
 					FileOutputStream fOut = new FileOutputStream(file, true);
 					OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 

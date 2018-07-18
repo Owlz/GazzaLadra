@@ -76,6 +76,7 @@ public class SessionActivity extends AppCompatActivity {
 						DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ITALY).format(new Date())
 				);
 				Intent i = new Intent(getApplicationContext(), QuizActivity.class);
+				Log.w("SessionActivity", "pre put intent: " + s);
 				i.putExtra("session", s);
 
 				startActivity(i);
@@ -100,6 +101,7 @@ public class SessionActivity extends AppCompatActivity {
 
 				for (Session s : sessioniUtente) {
 					List<Topic> mom = uvm.getTopicBySession(s.getUid()).getValue();
+					Log.w("topic", "" + mom);
 					sessionCollector.put(s, mom);
 				}
 				adapter.setSessions(sessioniUtente, sessionCollector);

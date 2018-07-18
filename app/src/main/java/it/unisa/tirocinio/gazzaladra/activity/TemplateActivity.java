@@ -131,8 +131,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			default:
 				return;
 		}
-		String x
-				= "" + event.values[0];
+		String x = "" + event.values[0];
 		String y = "" + event.values[1];
 		String z = "" + event.values[2];
 

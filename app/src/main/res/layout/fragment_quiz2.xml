@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/gridContainer"
+		android:layout_centerHorizontal="true"
+		android:paddingBottom="50dp">
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			android:layout_width="332dp"
+			android:layout_height="26dp"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			android:max="1000"
+			android:progress="0"
+			style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+			android:progressDrawable="@drawable/progress_bar"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="#000"
+			android:text="placeholder"
+			android:id="@+id/countdown_tv"
+			android:layout_marginTop="25dp"/>
+	</RelativeLayout>
+
+	<GridLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/gridContainer"
+		android:columnCount="3"
+		android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true">
+
+	</GridLayout>
+
+</RelativeLayout>
