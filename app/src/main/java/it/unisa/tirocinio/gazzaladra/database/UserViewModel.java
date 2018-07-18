@@ -17,27 +17,27 @@ public class UserViewModel extends AndroidViewModel {
 		allUsers = repo.getAllUsers();
 	}
 
-	public LiveData<List<User>> getAllUsers() {
-		return allUsers;
+	public void insert(User user) {
+		repo.insert(user);
 	}
 
-	public void insertUser(User user) {
-		repo.insert(user);
+	public void insert(Session session) {
+		repo.insert(session);
+	}
+
+	public void insert(Topic topic) {
+		repo.insert(topic);
+	}
+
+	public LiveData<List<User>> getAllUsers() {
+		return allUsers;
 	}
 
 	public LiveData<List<Session>> getSessionByUser(long id) {
 		return repo.getSessionByUser(id);
 	}
 
-	public void insertSession(Session s) {
-		repo.insertSession(s);
-	}
-
 	public LiveData<List<Topic>> getTopicBySession(long id) {
 		return repo.getTopicBySession(id);
-	}
-
-	public void insertTopic(Topic t) {
-		repo.insertTopic(t);
 	}
 }

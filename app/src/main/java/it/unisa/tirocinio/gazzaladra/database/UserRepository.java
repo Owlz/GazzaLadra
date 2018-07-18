@@ -7,15 +7,17 @@ import android.os.AsyncTask;
 import java.util.List;
 
 public class UserRepository {
-	private UserDAO userDAO;
+	UserDAO userDAO;
+	LiveData<List<User>> userList;
 
 	public UserRepository(Application app) {
 		UserDB db = UserDB.getDatabase(app);
 		userDAO = db.UserDAO();
+		userList = userDAO.getAllUsers();
 	}
 
 	public LiveData<List<User>> getAllUsers() {
-		return userDAO.getAllUsers();
+		return userList;
 	}
 
 	public LiveData<List<Session>> getSessionByUser(long id) {
@@ -27,56 +29,41 @@ public class UserRepository {
 	}
 
 	public void insert(User user) {
-		new InsertAsyncTask(userDAO).execute(user);
+		new InsertAsyncTask().execute(user);
 	}
 
-	private class InsertAsyncTask extends AsyncTask<User, Void, Void> {
-		private UserDAO dao;
-
-		public InsertAsyncTask(UserDAO dao) {
-			this.dao = dao;
-		}
-
-		@Override
-		protected Void doInBackground(User... users) {
-			dao.insert(users[0]);
-			return null;
-		}
+	public void insert(Session s) {
+		new InsertSessionAsyncTask().execute(s);
 	}
 
-	public void insertSession(Session s) {
-		new InsertSessionAsyncTask(userDAO).execute(s);
+	public void insert(Topic t) {
+		new InsertTopicAsyncTask().execute(t);
 	}
 
 	private class InsertSessionAsyncTask extends AsyncTask<Session, Void, Void> {
-		private UserDAO dao;
-
-		public InsertSessionAsyncTask(UserDAO dao) {
-			this.dao = dao;
-		}
-
 		@Override
 		protected Void doInBackground(Session... s) {
-			dao.insertSession(s[0]);
+			userDAO.insert(s[0]);
 			return null;
 		}
 	}
 
-	public void insertTopic(Topic t) {
-		new InsertTopicAsyncTask(userDAO).execute(t);
+	private class InsertAsyncTask extends AsyncTask<User, Void, Void> {
+		@Override
+		protected Void doInBackground(User... users) {
+			userDAO.insert(users[0]);
+			return null;
+		}
 	}
 
 	private class InsertTopicAsyncTask extends AsyncTask<Topic, Void, Void> {
-		private UserDAO dao;
-
-		public InsertTopicAsyncTask(UserDAO dao) {
-			this.dao = dao;
-		}
-
 		@Override
 		protected Void doInBackground(Topic... t) {
-			dao.insertTopic(t[0]);
+			userDAO.insert(t[0]);
 			return null;
 		}
 	}
 }
+
+
+

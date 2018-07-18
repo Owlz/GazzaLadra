@@ -11,37 +11,37 @@ import android.os.Parcelable;
 @Entity(tableName = "sessions",
 		foreignKeys = @ForeignKey(
 				entity = User.class,
-				parentColumns = "uid",
-				childColumns = "uidUser"
+				parentColumns = "uidSession",
+				childColumns = "uidU"
 		)
 )
 public class Session implements Parcelable {
 	@PrimaryKey(autoGenerate = true)
-	private long uid;
+	private long uidSession;
 
 	@ColumnInfo(name = "data")
 	private String data;
 	@ColumnInfo(name = "numSession")
 	private int numSession;
-	@ColumnInfo(name = "uidUser")
-	private long uidUser;
+	@ColumnInfo(name = "uidU")
+	private long uidU;
 
 	public Session() {
 	}
 
 	@Ignore
-	public Session(long uidUser, int numSession, String data) {
+	public Session(long uidU, int numSession, String data) {
 		this.data = data;
 		this.numSession = numSession;
-		this.uidUser = uidUser;
+		this.uidU = uidU;
 	}
 
-	public long getUid() {
-		return uid;
+	public long getUidSession() {
+		return uidSession;
 	}
 
-	public void setUid(long uid) {
-		this.uid = uid;
+	public void setUidSession(long uidSession) {
+		this.uidSession = uidSession;
 	}
 
 	public String getData() {
@@ -60,29 +60,29 @@ public class Session implements Parcelable {
 		this.numSession = numSession;
 	}
 
-	public long getUidUser() {
-		return uidUser;
+	public long getUidU() {
+		return uidU;
 	}
 
-	public void setUidUser(long uidUser) {
-		this.uidUser = uidUser;
+	public void setUidU(long uidU) {
+		this.uidU = uidU;
 	}
 
 	@Override
 	public String toString() {
 		return "Session{" +
-				"uid=" + uid +
+				"uidSession=" + uidSession +
 				", data='" + data + '\'' +
 				", numSession=" + numSession +
-				", uidUser=" + uidUser +
+				", uidU=" + uidU +
 				'}';
 	}
 
 	protected Session(Parcel in) {
-		uid = in.readLong();
+		uidSession = in.readLong();
 		data = in.readString();
 		numSession = in.readInt();
-		uidUser = in.readLong();
+		uidU = in.readLong();
 	}
 
 	@Override
@@ -92,10 +92,10 @@ public class Session implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(uid);
+		dest.writeLong(uidSession);
 		dest.writeString(data);
 		dest.writeInt(numSession);
-		dest.writeLong(uidUser);
+		dest.writeLong(uidU);
 	}
 
 	@SuppressWarnings("unused")

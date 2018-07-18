@@ -14,25 +14,20 @@ public interface UserDAO {
 	void insert(User u);
 
 	@Insert
-	void insertSession(Session s);
+	void insert(Session s);
 
 	@Insert
-	void insertTopic(Topic t);
+	void insert(Topic t);
 
-	@Query("DELETE FROM users WHERE uid = :id")
+	@Query("DELETE FROM users WHERE uidUser = :id")
 	void deleteUser(int id);
 
-	@Query("DELETE FROM users")
-	void deleteAll();
-
-	@Query("SELECT * FROM users ORDER BY uid ASC")
+	@Query("SELECT * FROM users ORDER BY uidUser ASC")
 	LiveData<List<User>> getAllUsers();
 
-	@Query("SELECT * FROM sessions WHERE uidUser = :idUser ORDER BY uid ASC")
+	@Query("SELECT * FROM sessions WHERE uidU = :idUser ORDER BY uidSession ASC")
 	LiveData<List<Session>> getAllSessionByUser(long idUser);
 
-	@Query("SELECT * FROM topic WHERE uidSession= :idSession ORDER BY uid ASC")
+	@Query("SELECT * FROM topics WHERE uidS = :idSession ORDER BY uidTopic ASC")
 	LiveData<List<Topic>> getAllTopicBySession(long idSession);
-
-
 }

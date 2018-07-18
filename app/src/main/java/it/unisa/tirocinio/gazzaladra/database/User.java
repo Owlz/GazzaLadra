@@ -10,7 +10,7 @@ import android.os.Parcelable;
 @Entity(tableName = "users")
 public class User implements Parcelable {
 	@PrimaryKey(autoGenerate = true)
-	private long uid;
+	private long uidUser;
 
 	@ColumnInfo(name = "name")
 	private String name;
@@ -29,12 +29,12 @@ public class User implements Parcelable {
 		this.photo = photo;
 	}
 
-	public long getUid() {
-		return uid;
+	public long getUidUser() {
+		return uidUser;
 	}
 
-	public void setUid(long uid) {
-		this.uid = uid;
+	public void setUidUser(long uidUser) {
+		this.uidUser = uidUser;
 	}
 
 	public String getName() {
@@ -63,7 +63,7 @@ public class User implements Parcelable {
 
 
 	protected User(Parcel in) {
-		uid = in.readLong();
+		uidUser = in.readLong();
 		name = in.readString();
 		lastName = in.readString();
 		photo = in.readString();
@@ -76,7 +76,7 @@ public class User implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(uid);
+		dest.writeLong(uidUser);
 		dest.writeString(name);
 		dest.writeString(lastName);
 		dest.writeString(photo);
@@ -85,7 +85,7 @@ public class User implements Parcelable {
 	@Override
 	public String toString() {
 		return "User{" +
-				"uid=" + uid +
+				"uidUser=" + uidUser +
 				", name='" + name + '\'' +
 				", lastName='" + lastName + '\'' +
 				", photo='" + photo + '\'' +

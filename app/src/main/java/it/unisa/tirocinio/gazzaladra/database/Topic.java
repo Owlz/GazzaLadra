@@ -8,19 +8,19 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "topic",
+@Entity(tableName = "topics",
 		foreignKeys = @ForeignKey(
 				entity = Session.class,
-				parentColumns = "uid",
-				childColumns = "uidSession"
+				parentColumns = "uidTopic",
+				childColumns = "uidS"
 		)
 )
 public class Topic implements Parcelable {
 	@PrimaryKey(autoGenerate = true)
-	private long uid;
+	private long uidTopic;
 
-	@ColumnInfo(name = "uidSession")
-	private long uidSession;
+	@ColumnInfo(name = "uidS")
+	private long uidS;
 	@ColumnInfo(name = "topicName")
 	private String name;
 	@ColumnInfo(name = "passed")
@@ -30,27 +30,26 @@ public class Topic implements Parcelable {
 	}
 
 	@Ignore
-
-	public Topic(long uidSession, String name, boolean isPassed) {
-		this.uidSession = uidSession;
+	public Topic(long uidS, String name, boolean isPassed) {
+		this.uidS = uidS;
 		this.name = name;
 		this.isPassed = isPassed;
 	}
 
-	public long getUid() {
-		return uid;
+	public long getUidTopic() {
+		return uidTopic;
 	}
 
-	public void setUid(long uid) {
-		this.uid = uid;
+	public void setUidTopic(long uidTopic) {
+		this.uidTopic = uidTopic;
 	}
 
-	public long getUidSession() {
-		return uidSession;
+	public long getUidS() {
+		return uidS;
 	}
 
-	public void setUidSession(long uidSession) {
-		this.uidSession = uidSession;
+	public void setUidS(long uidS) {
+		this.uidS = uidS;
 	}
 
 	public String getName() {
@@ -70,8 +69,8 @@ public class Topic implements Parcelable {
 	}
 
 	protected Topic(Parcel in) {
-		uid = in.readLong();
-		uidSession = in.readLong();
+		uidTopic = in.readLong();
+		uidS = in.readLong();
 		name = in.readString();
 		isPassed = in.readByte() != 0x00;
 	}
@@ -83,8 +82,8 @@ public class Topic implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(uid);
-		dest.writeLong(uidSession);
+		dest.writeLong(uidTopic);
+		dest.writeLong(uidS);
 		dest.writeString(name);
 		dest.writeByte((byte) (isPassed ? 0x01 : 0x00));
 	}
