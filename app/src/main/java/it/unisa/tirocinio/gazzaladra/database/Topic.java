@@ -2,19 +2,12 @@ package it.unisa.tirocinio.gazzaladra.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "topics",
-		foreignKeys = @ForeignKey(
-				entity = Session.class,
-				parentColumns = "uidTopic",
-				childColumns = "uidS"
-		)
-)
+@Entity(tableName = "topics")
 public class Topic implements Parcelable {
 	@PrimaryKey(autoGenerate = true)
 	private long uidTopic;
@@ -101,4 +94,13 @@ public class Topic implements Parcelable {
 		}
 	};
 
+	@Override
+	public String toString() {
+		return "Topic{" +
+				"uidTopic=" + uidTopic +
+				", uidS=" + uidS +
+				", name='" + name + '\'' +
+				", isPassed=" + isPassed +
+				'}';
+	}
 }

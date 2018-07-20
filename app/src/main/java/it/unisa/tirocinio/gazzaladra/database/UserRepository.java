@@ -9,6 +9,7 @@ import java.util.List;
 public class UserRepository {
 	UserDAO userDAO;
 	LiveData<List<User>> userList;
+	LiveData<List<SessionTopic>> lastSessionTopic;
 
 	public UserRepository(Application app) {
 		UserDB db = UserDB.getDatabase(app);
@@ -28,41 +29,44 @@ public class UserRepository {
 		return userDAO.getAllTopicBySession(id);
 	}
 
+	public LiveData<List<SessionTopic>> getLastSessionTopic(long id) {
+		return userDAO.getCompleteSessionsById(id);
+	}
+
+	//todo: dovrebbero ritornare long
 	public void insert(User user) {
 		new InsertAsyncTask().execute(user);
 	}
 
-	public void insert(Session s) {
-		new InsertSessionAsyncTask().execute(s);
+	public long insert(Session s) {
+		return userDAO.insert(s);
 	}
 
 	public void insert(Topic t) {
 		new InsertTopicAsyncTask().execute(t);
 	}
 
-	private class InsertSessionAsyncTask extends AsyncTask<Session, Void, Void> {
+	private class InsertSessionAsyncTask extends AsyncTask<Session, Void, Long> {
 		@Override
-		protected Void doInBackground(Session... s) {
-			userDAO.insert(s[0]);
-			return null;
+		protected Long doInBackground(Session... s) {
+			return userDAO.insert(s[0]);
 		}
 	}
 
-	private class InsertAsyncTask extends AsyncTask<User, Void, Void> {
+	private class InsertAsyncTask extends AsyncTask<User, Void, Long> {
 		@Override
-		protected Void doInBackground(User... users) {
-			userDAO.insert(users[0]);
-			return null;
+		protected Long doInBackground(User... users) {
+			return userDAO.insert(users[0]);
 		}
 	}
 
-	private class InsertTopicAsyncTask extends AsyncTask<Topic, Void, Void> {
+	private class InsertTopicAsyncTask extends AsyncTask<Topic, Void, Long> {
 		@Override
-		protected Void doInBackground(Topic... t) {
-			userDAO.insert(t[0]);
-			return null;
+		protected Long doInBackground(Topic... t) {
+			return userDAO.insert(t[0]);
 		}
 	}
+
 }
 
 

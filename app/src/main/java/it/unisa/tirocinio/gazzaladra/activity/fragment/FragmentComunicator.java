@@ -1,7 +1,7 @@
 package it.unisa.tirocinio.gazzaladra.activity.fragment;
 
-import it.unisa.tirocinio.gazzaladra.Roba;
+import it.unisa.tirocinio.gazzaladra.FragmentData;
 
 public interface FragmentComunicator {
-	void onFragmentEnd(Roba roba);
+	void onFragmentEnd(FragmentData fragmentData);
 }

@@ -4,28 +4,30 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.unisa.tirocinio.gazzaladra.FragmentData;
 import it.unisa.tirocinio.gazzaladra.R;
-import it.unisa.tirocinio.gazzaladra.Roba;
+import it.unisa.tirocinio.gazzaladra.Utils;
+import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 
 
-public class Quiz2Fragment extends Fragment {
+public class Quiz2Fragment extends FragmentTemplate implements View.OnClickListener {
 	int[] randNumbers;
-	private ButtonGameLogic bgl;
+	int indexWinning = 0;
+	private int[] ordered;
 
 	private FragmentComunicator mListener;
 
@@ -38,6 +40,8 @@ public class Quiz2Fragment extends Fragment {
 	private int counter;
 	private CustomTimer task;
 	private long timeStart;
+	private Button next;
+
 
 	public Quiz2Fragment() {
 		// Required empty public constructor
@@ -46,7 +50,6 @@ public class Quiz2Fragment extends Fragment {
 	public static Quiz2Fragment newInstance() {
 		return new Quiz2Fragment();
 	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +57,7 @@ public class Quiz2Fragment extends Fragment {
 		randNumbers = new int[50];
 		final Random r = new Random();
 		for (int i = 0; i < 50; i++) {
-			randNumbers[i] = i;
+			randNumbers[i] = i + 1;
 		}
 		for (int i = 0; i < 50; i++) {
 			int swp = r.nextInt(50);
@@ -63,8 +66,11 @@ public class Quiz2Fragment extends Fragment {
 			randNumbers[swp] = randNumbers[i];
 			randNumbers[i] = mom;
 		}
-
-		bgl = new ButtonGameLogic();
+		ordered = new int[9];
+		for (int i = 0; i < 9; i++) {
+			ordered[i] = randNumbers[i];
+		}
+		Arrays.sort(ordered);
 
 		isTimeExpired = false;
 		timer = new Timer();
@@ -81,7 +87,7 @@ public class Quiz2Fragment extends Fragment {
 		for (int i = 0; i < 9; i++) {
 			Button b = new Button(getContext());
 			b.setText("" + randNumbers[i]);
-			b.setOnClickListener(bgl);
+			b.setOnClickListener(this);
 			gl.addView(b);
 		}
 
@@ -91,6 +97,25 @@ public class Quiz2Fragment extends Fragment {
 		progressBar.setProgress(0);
 		progressBar.setMax(REQUEST_TIMER);
 		timer.scheduleAtFixedRate(task, 500, 1000);
+		timeStart = System.currentTimeMillis();
+		isTimeExpired = false;
+
+		next = v.findViewById(R.id.next);
+		next.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				end(v);
+			}
+		});
+
+		for (View child : Utils.getAllChildrenBFS(v)) {
+			child.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View view, MotionEvent event) {
+					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
+				}
+			});
+		}
 
 		return v;
 	}
@@ -112,6 +137,48 @@ public class Quiz2Fragment extends Fragment {
 		mListener = null;
 	}
 
+	@Override
+	public String getFragmentIdNoCheck() {
+		return "QuizTastiInOrdine";
+	}
+
+	@Override
+	public void onClick(View v) {
+		Button b = (Button) v;
+		int actualNumber = Integer.parseInt(b.getText().toString());
+		if (actualNumber == ordered[indexWinning] && indexWinning != 8) {
+			indexWinning++;
+			b.setTextColor(Color.GREEN);
+			b.setOnClickListener(null);
+		} else if (actualNumber != ordered[indexWinning]) {
+			b.setTextColor(Color.RED);
+		} else {
+			indexWinning++;
+			b.setTextColor(Color.GREEN);
+			b.setOnClickListener(null);
+
+			timer.cancel();
+
+			next.setVisibility(View.VISIBLE);
+
+
+		}
+	}
+
+	private void end(View v) {
+		mListener.onFragmentEnd(
+				new FragmentData(
+						super.getFragmentId(),
+						null,
+						String.valueOf(!isTimeExpired),
+						String.valueOf(!isTimeExpired),
+						!isTimeExpired,
+						timeStart,
+						System.currentTimeMillis()
+				)
+		);
+	}
+
 	private class CustomTimer extends TimerTask {
 		@Override
 		public void run() {
@@ -127,6 +194,9 @@ public class Quiz2Fragment extends Fragment {
 						timer.cancel();
 
 						tvTimer.setText("0 - Tempo scaduto!");
+						isTimeExpired = true;
+
+						next.setVisibility(View.VISIBLE);
 					}
 				}
 			});
@@ -138,39 +208,4 @@ public class Quiz2Fragment extends Fragment {
 		super.onSaveInstanceState(outState);
 		outState.putInt("counter", counter);
 	}
-
-	private class ButtonGameLogic implements View.OnClickListener {
-		int i = 0;
-		private int[] ordered;
-
-		public ButtonGameLogic() {
-			ordered = new int[9];
-			for (int i = 0; i < 9; i++) {
-				ordered[i] = randNumbers[i];
-			}
-			Arrays.sort(ordered);
-		}
-
-		@Override
-		public void onClick(View v) {
-			Button b = (Button) v;
-			int actualNumber = Integer.parseInt(b.getText().toString());
-			if (actualNumber == ordered[i] && i != 8) {
-				i++;
-				b.setTextColor(Color.GREEN);
-				b.setOnClickListener(null);
-			} else if (actualNumber != ordered[i]) {
-				b.setTextColor(Color.RED);
-			} else {
-				i++;
-				b.setTextColor(Color.GREEN);
-				b.setOnClickListener(null);
-				Toast.makeText(getContext(), "vittoria", Toast.LENGTH_SHORT).show();
-				timer.cancel();
-				mListener.onFragmentEnd(new Roba("frammento01", "scen", "aaaaa", "bbbbb", false, 41585l, 4241l));
-
-			}
-		}
-	}
-
 }

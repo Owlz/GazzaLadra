@@ -11,13 +11,13 @@ import java.util.List;
 @Dao
 public interface UserDAO {
 	@Insert
-	void insert(User u);
+	long insert(User u);
 
 	@Insert
-	void insert(Session s);
+	long insert(Session s);
 
 	@Insert
-	void insert(Topic t);
+	long insert(Topic t);
 
 	@Query("DELETE FROM users WHERE uidUser = :id")
 	void deleteUser(int id);
@@ -30,4 +30,7 @@ public interface UserDAO {
 
 	@Query("SELECT * FROM topics WHERE uidS = :idSession ORDER BY uidTopic ASC")
 	LiveData<List<Topic>> getAllTopicBySession(long idSession);
+
+	@Query("SELECT * FROM sessions WHERE uidU = :idUser ORDER BY uidSession ASC")
+	LiveData<List<SessionTopic>> getCompleteSessionsById(long idUser);
 }

@@ -31,14 +31,27 @@ public class MainActivity extends AppCompatActivity {
 	private RecyclerView rv;
 	private UserViewModel uvm;
 	private TextView warning;
+	private boolean firstDraw;
 
 	private final static int PERMISSION_REQUEST_CODE = 0;
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean("firstDraw", firstDraw);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		warning = findViewById(R.id.warning);
+
+		if (savedInstanceState != null) {
+			firstDraw = savedInstanceState.getBoolean("firstDraw");
+		} else {
+			firstDraw = true;
+		}
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -78,21 +91,21 @@ public class MainActivity extends AppCompatActivity {
 		uvm.getAllUsers().observe(this, new Observer<List<User>>() {
 			@Override
 			public void onChanged(@Nullable List<User> users) {
-				adapter.setUsers(users);
 
+				//Questo if serve per far apparire la scritta solo la prima volta
+				if (firstDraw && users.size() == 0) {
+					rv.setLayoutManager(null);
+					warning.setVisibility(View.VISIBLE);
+				} else if (firstDraw && users.size() != 0) {
+					rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+					warning.setVisibility(View.GONE);
+					firstDraw = false;
+				}
+
+				adapter.setUsers(users);
 			}
 		});
 
-//		if (adapter.getItemCount() > 0) {
-//			Log.w("MainActivity", ">0");
-		rv.setLayoutManager(new GridLayoutManager(this, 2));
-		warning.setVisibility(View.GONE);
-//		} else {
-//			Log.w("MainActivity", "== 0");
-//			rv.setLayoutManager(null);
-//			warning.setVisibility(View.VISIBLE);
-//
-//		}
 		rv.setAdapter(adapter);
 	}
 
@@ -102,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
 		if (requestCode == 1) {
 			if (resultCode == RESULT_OK) {
 				User u = data.getParcelableExtra(LoginActivity.EXTRA_REPLY);
-				uvm.insertUser(u);
+				uvm.insert(u);
 			} else {
-				Toast.makeText(getApplicationContext(), "errore", Toast.LENGTH_LONG)
+				Toast.makeText(getApplicationContext(), "Nessun utente inserito", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
@@ -125,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 				}
 			}
 		}
-
 	}
 
 }

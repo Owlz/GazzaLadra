@@ -11,8 +11,10 @@ import android.os.Parcelable;
 @Entity(tableName = "sessions",
 		foreignKeys = @ForeignKey(
 				entity = User.class,
-				parentColumns = "uidSession",
-				childColumns = "uidU"
+				parentColumns = "uidUser",
+				childColumns = "uidU",
+				onDelete = ForeignKey.CASCADE,
+				onUpdate = ForeignKey.CASCADE
 		)
 )
 public class Session implements Parcelable {

@@ -10,11 +10,13 @@
 		android:layout_height="wrap_content"
 		android:layout_centerHorizontal="true"
 		android:text="La prossima attività deve essere svolta da:"
-		android:textSize="28sp"
+		android:padding="20dp"
+		android:textSize="24sp"
 		android:textColor="@color/textDarkColor"
 		android:layout_above="@id/scenario"
 		android:textAlignment="center"
-		android:layout_marginBottom="20dp"/>
+		android:layout_marginBottom="20dp"
+		android:elevation="2dp"/>
 
 	<TextView
 		android:layout_width="wrap_content"
@@ -25,7 +27,8 @@
 		android:layout_centerHorizontal="true"
 		android:layout_marginBottom="36dp"
 		android:textColor="#000000"
-		android:textStyle="italic"/>
+		android:textStyle="italic"
+		android:elevation="2dp"/>
 
 	<Button
 		android:layout_width="wrap_content"

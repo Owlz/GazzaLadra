@@ -2,14 +2,13 @@ package it.unisa.tirocinio.gazzaladra.activity.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import it.unisa.tirocinio.gazzaladra.R;
 
-public class RiepologFragment extends Fragment {
+public class RiepologFragment extends FragmentTemplate {
 
 	private RiepilogoFragmentCallback mListener;
 
@@ -33,7 +32,7 @@ public class RiepologFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_riepilog, container, false);
 
 		/* codice */
-
+		mListener.riepilogoCallback();
 		return v;
 	}
 
@@ -57,6 +56,11 @@ public class RiepologFragment extends Fragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public String getFragmentIdNoCheck() {
+		return "RiepilogoFragment";
 	}
 
 	public interface RiepilogoFragmentCallback {

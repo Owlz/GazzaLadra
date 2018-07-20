@@ -10,6 +10,7 @@ import java.util.List;
 public class UserViewModel extends AndroidViewModel {
 	private UserRepository repo;
 	private LiveData<List<User>> allUsers;
+	private LiveData<List<SessionTopic>> allSessions;
 
 	public UserViewModel(@NonNull Application application) {
 		super(application);
@@ -21,8 +22,8 @@ public class UserViewModel extends AndroidViewModel {
 		repo.insert(user);
 	}
 
-	public void insert(Session session) {
-		repo.insert(session);
+	public long insert(Session session) {
+		return repo.insert(session);
 	}
 
 	public void insert(Topic topic) {
@@ -39,5 +40,9 @@ public class UserViewModel extends AndroidViewModel {
 
 	public LiveData<List<Topic>> getTopicBySession(long id) {
 		return repo.getTopicBySession(id);
+	}
+
+	public LiveData<List<SessionTopic>> getCompleteSessionByUser(long id) {
+		return repo.getLastSessionTopic(id);
 	}
 }

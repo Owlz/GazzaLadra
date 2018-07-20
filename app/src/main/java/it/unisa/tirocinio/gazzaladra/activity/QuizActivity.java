@@ -7,15 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unisa.tirocinio.gazzaladra.FragmentData;
 import it.unisa.tirocinio.gazzaladra.QuizMaker;
 import it.unisa.tirocinio.gazzaladra.R;
-import it.unisa.tirocinio.gazzaladra.Roba;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
+import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.IntermediateFragment;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.RiepologFragment;
 import it.unisa.tirocinio.gazzaladra.database.Session;
@@ -23,24 +23,24 @@ import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
-public class QuizActivity extends TemplateActivity implements IntermediateFragment.IntermediateFragmentCallback, FragmentComunicator {
+public class QuizActivity extends TemplateActivity implements IntermediateFragment.IntermediateFragmentCallback, FragmentComunicator, RiepologFragment.RiepilogoFragmentCallback {
 	private FragmentManager fm;
 	private List<String> fragments;
 	private List<String> scenari;
 	private Session session;
-	private long activityStart;
-	private int index;
+	private long timeActivityStart;
+	private int fragmentIndex;
 	private String currScenario;
 
-	private ArrayList<Roba> roba;
+	private ArrayList<FragmentData> fragmentResultData;
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putLong("start", activityStart);
-		outState.putInt("index", index);
+		outState.putLong("start", timeActivityStart);
+		outState.putInt("fragmentIndex", fragmentIndex);
 		outState.putString("currScenario", currScenario);
-		outState.putParcelableArrayList("roba", roba);
+		outState.putParcelableArrayList("fragmentResultData", fragmentResultData);
 	}
 
 	@Override
@@ -52,150 +52,133 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
+		super.setActivityId("QuizActivity");
+
 
 		Intent i = getIntent();
 		session = i.getParcelableExtra("session");
-		super.setSession(session);
-
-		Log.w("QuizActivity", "inside quizActy");
-
+		super.setSessionFolder(session);
 
 		fm = getSupportFragmentManager();
 
 		if (saved != null) {
-			activityStart = saved.getLong("start");
-			index = saved.getInt("index");
+			timeActivityStart = saved.getLong("start");
+			fragmentIndex = saved.getInt("fragmentIndex");
 			currScenario = saved.getString("currScenario");
-			roba = saved.getParcelableArrayList("roba");
-			Log.w("QuizActivity", "onCreateAgain");
+			fragmentResultData = saved.getParcelableArrayList("fragmentResultData");
 
 		} else {
-			Log.w("QuizActivity", "init new quiz");
+			fragmentResultData = new ArrayList<>();
+			timeActivityStart = System.currentTimeMillis();
+			fragmentIndex = 0;
 
-			roba = new ArrayList<>();
-			activityStart = System.currentTimeMillis();
-			index = 0;
-
-			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(1);
+			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(2);
 			fragments = p.first;
 			scenari = p.second;
 
-			currScenario = scenari.get(index);
-			index++;
+			currScenario = scenari.get(fragmentIndex);
+			fragmentIndex++;
 
 			Bundle b = new Bundle();
 			b.putString("scenario", currScenario);
-			Log.w("QuizActivity", "pre begin transition");
+
+			FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
+					getApplicationContext(),
+					IntermediateFragment.class.getName(),
+					b
+			);
+			super.setFragmentId(frag.getFragmentId());
 
 			fm.beginTransaction()
-					.replace(R.id.fragmentContainer,
-							Fragment.instantiate(
-									getApplicationContext(),
-									IntermediateFragment.class.getName(),
-									b
-							)
-					)
+					.replace(R.id.fragmentContainer, frag)
 					.commit();
-			Log.w("QuizActivity", "post begin transition");
-
 		}
 	}
 
 	@Override
 	public void intermediateCallback() {
-		String fragName = fragments.get(index - 1);
-		Fragment frag = Fragment.instantiate(getApplicationContext(), fragName);
+		String fragName = fragments.get(fragmentIndex - 1);
+		FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(getApplicationContext(), fragName);
 
 		fm.beginTransaction()
 				.replace(R.id.fragmentContainer, frag)
 				.commit();
+		super.setFragmentId(frag.getFragmentId());
+
+
 	}
 
 	@Override
-	public void onFragmentEnd(Roba robaNuova) {
-		Log.w("QuizActivity", "onFragmentEnd");
+	public void onFragmentEnd(FragmentData fragmentDataNew) {
+		fragmentDataNew.setScenario(currScenario);
+		fragmentResultData.add(fragmentDataNew);
 
-		roba.add(robaNuova);
-
-		if (index < fragments.size()) {
-			Log.w("QuizActivity", "index < fragment.size(): " + index);
-
-			currScenario = scenari.get(index);
-			index++;
+		//next activity
+		if (fragmentIndex < fragments.size()) {
+			currScenario = scenari.get(fragmentIndex);
+			fragmentIndex++;
 
 			Bundle b = new Bundle();
 			b.putString("scenario", currScenario);
 
+			FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
+					getApplicationContext(),
+					IntermediateFragment.class.getName(),
+					b
+			);
 			fm.beginTransaction()
-					.replace(R.id.fragmentContainer,
-							Fragment.instantiate(
-									getApplicationContext(),
-									IntermediateFragment.class.getName(),
-									b
-							)
-					)
+					.replace(R.id.fragmentContainer, frag)
 					.commit();
-		} else {
-			Log.w("QuizActivity", "else writing");
-			fm.beginTransaction()
-					.replace(R.id.fragmentContainer,
-							Fragment.instantiate(getApplicationContext(),
-									RiepologFragment.class.getName()))
-					.commit();
-
-
-			UserViewModel uvm = new UserViewModel(getApplication());
-			uvm.insertSession(session);
-
-
-			List<Session> l = uvm.getSessionByUser(session.getUidUser()).getValue();
-			session = l.get(l.size() - 1);
-
-			for (Roba r : roba) {
-				AsyncFileWriter.write(new String[]{
-						r.getIdFragment(),
-						"" + r.getTimeStart(),
-						"" + r.getTimeEnd(),
-						r.getRispostaData(),
-						r.getRispostaCorretta(),
-						"" + session.getUidUser(),
-						currScenario
-				}, super.getSessionFolder(), "topic.txt");
-
-
-				uvm.insertTopic(
-						new Topic(
-								session.getUid(),
-								r.getIdFragment(),
-								(r.getRispostaData().equals(r.getRispostaCorretta()))
-						)
-				);
-
-				Log.w("QuizActivity", "aggiunto elemento nel db e nel file");
-
-			}
+			super.setFragmentId(frag.getFragmentId());
+			return;
 		}
+
+		//end of session
+		FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
+				getApplicationContext(),
+				RiepologFragment.class.getName()
+		);
+		fm.beginTransaction()
+				.replace(R.id.fragmentContainer, frag)
+				.commit();
+		super.setFragmentId(frag.getFragmentId());
+
+		UserViewModel uvm = new UserViewModel(getApplication());
+		//todo: questo insert non è async e la cosa mi infastidisce
+		long val = uvm.insert(session);
+		session.setUidSession(val);
+
+
+		for (FragmentData r : fragmentResultData) {
+			AsyncFileWriter.write(new String[]{
+					r.getIdFragment(),
+					"" + r.getTimeStart(),
+					"" + r.getTimeEnd(),
+					r.getRispostaData(),
+					r.getRispostaCorretta(),
+					"" + session.getUidU(),
+					r.getScenario()
+			}, super.getSessionFolder(), "topic");
+
+			uvm.insert(new Topic(session.getUidSession(), r.getIdFragment(), r.isComplete()));
+		}
+		writeActivity();
 	}
+
 
 	public void writeActivity() {
 		AsyncFileWriter.write(new String[]{
-				"" + session.getUidUser(),
-				"" + session.getUid(),
+				"" + session.getUidU(),
+				"" + session.getUidSession(),
 				"" + session.getNumSession(),
 				"" + session.getData(),
-				"" + activityStart,
+				"" + timeActivityStart,
 				"" + System.currentTimeMillis()
-		}, super.getSessionFolder(), "activity.txt");
+		}, super.getSessionFolder(), "activity");
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	public void riepilogoCallback() {
+		/*code*/
 	}
-
-	@Override
-	public void onBackPressed() {
-		return;
-	}
-
 }

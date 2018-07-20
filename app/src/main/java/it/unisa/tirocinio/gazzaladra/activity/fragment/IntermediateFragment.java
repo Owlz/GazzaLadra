@@ -2,19 +2,15 @@ package it.unisa.tirocinio.gazzaladra.activity.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import it.unisa.tirocinio.gazzaladra.R;
-import it.unisa.tirocinio.gazzaladra.Utils;
-import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 
-public class IntermediateFragment extends Fragment {
+public class IntermediateFragment extends FragmentTemplate {
 	private String scenario;
 
 	private IntermediateFragmentCallback mListener;
@@ -64,14 +60,15 @@ public class IntermediateFragment extends Fragment {
 			scenario = savedInstanceState.getString("scenario");
 		}
 
-		for (View child : Utils.getAllChildrenBFS(v)) {
-			child.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent event) {
-					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
-				}
-			});
-		}
+		//todo: fragment di gioco
+//		for (View child : Utils.getAllChildrenBFS(v)) {
+//			child.setOnTouchListener(new View.OnTouchListener() {
+//				@Override
+//				public boolean onTouch(View view, MotionEvent event) {
+//					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
+//				}
+//			});
+//		}
 
 		return v;
 	}
@@ -97,6 +94,11 @@ public class IntermediateFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString("scenario", scenario);
+	}
+
+	@Override
+	public String getFragmentIdNoCheck() {
+		return "IntermediateFragment";
 	}
 
 	public interface IntermediateFragmentCallback {

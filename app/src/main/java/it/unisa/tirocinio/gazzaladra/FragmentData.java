@@ -3,7 +3,7 @@ package it.unisa.tirocinio.gazzaladra;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Roba implements Parcelable {
+public class FragmentData implements Parcelable {
 	private String idFragment;
 	private String scenario;
 	private String rispostaData;
@@ -12,10 +12,10 @@ public class Roba implements Parcelable {
 	private long timeStart;
 	private long timeEnd;
 
-	public Roba() {
+	public FragmentData() {
 	}
 
-	public Roba(String idFragment, String scenario, String rispostaData, String rispostaCorretta, boolean isComplete, long timeStart, long timeEnd) {
+	public FragmentData(String idFragment, String scenario, String rispostaData, String rispostaCorretta, boolean isComplete, long timeStart, long timeEnd) {
 		this.idFragment = idFragment;
 		this.scenario = scenario;
 		this.rispostaData = rispostaData;
@@ -83,7 +83,7 @@ public class Roba implements Parcelable {
 
 	@Override
 	public String toString() {
-		return "Roba{" +
+		return "FragmentData{" +
 				"idFragment='" + idFragment + '\'' +
 				", scenario='" + scenario + '\'' +
 				", rispostaData='" + rispostaData + '\'' +
@@ -94,7 +94,7 @@ public class Roba implements Parcelable {
 				'}';
 	}
 
-	protected Roba(Parcel in) {
+	protected FragmentData(Parcel in) {
 		idFragment = in.readString();
 		scenario = in.readString();
 		rispostaData = in.readString();
@@ -121,15 +121,15 @@ public class Roba implements Parcelable {
 	}
 
 	@SuppressWarnings("unused")
-	public static final Parcelable.Creator<Roba> CREATOR = new Parcelable.Creator<Roba>() {
+	public static final Parcelable.Creator<FragmentData> CREATOR = new Parcelable.Creator<FragmentData>() {
 		@Override
-		public Roba createFromParcel(Parcel in) {
-			return new Roba(in);
+		public FragmentData createFromParcel(Parcel in) {
+			return new FragmentData(in);
 		}
 
 		@Override
-		public Roba[] newArray(int size) {
-			return new Roba[size];
+		public FragmentData[] newArray(int size) {
+			return new FragmentData[size];
 		}
 	};
 }

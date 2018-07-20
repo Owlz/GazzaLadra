@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class AsyncFileWriter {
+	public final static String FORMATO = ".txt";
 	/**
 	 * Simple utility function to parse a List of strings into a CSV String
 	 *
@@ -44,11 +45,12 @@ public class AsyncFileWriter {
 	/**
 	 * A simple async writer
 	 *
-	 * @param values     is the list of all the data to write in the file
-	 * @param folderName is the folder name, if it does not exist it will be created
-	 * @param fileName   its the file name, if it does not exist it will be created
+	 * @param values        is the list of all the data to write in the file
+	 * @param folderName    is the folder name, if it does not exist it will be created
+	 * @param subFileName   its the file name without the extension, if it does not exist it will be created
 	 */
-	static public void write(final String[] values, final String folderName, final String fileName) {
+	static public void write(final String[] values, final String folderName, final String subFileName) {
+		final String fileName = subFileName + FORMATO;
 		AsyncTask.execute(new Runnable() {
 			@Override
 			public void run() {

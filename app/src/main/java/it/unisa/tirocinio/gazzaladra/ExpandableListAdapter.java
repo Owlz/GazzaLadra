@@ -12,6 +12,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +44,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return sessionCollector.get(sessions.get(groupPosition)).size();
+		Session padre = sessions.get(groupPosition);
+		List<Topic> figli = sessionCollector.get(padre);
+		return figli.size();
 	}
 
 	@Override
@@ -52,18 +56,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		List<Topic> sc = sessionCollector.get(sessions.get(groupPosition));
-		return sc.get(childPosition);
+		Session padre = sessions.get(groupPosition);
+		List<Topic> figli = sessionCollector.get(padre);
+		return figli.get(childPosition);
 	}
 
 	@Override
 	public long getGroupId(int groupPosition) {
-		return groupPosition;
+		Session padre = sessions.get(groupPosition);
+
+		return padre.getUidSession();
 	}
 
 	@Override
 	public long getChildId(int groupPosition, int childPosition) {
-		return childPosition;
+		Session padre = sessions.get(groupPosition);
+		List<Topic> figli = sessionCollector.get(padre);
+
+		return figli.get(childPosition).getUidTopic();
 	}
 
 	@Override
@@ -108,12 +118,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
-		return true;
+		return false;
 	}
 
 	public void setSessions(List<Session> list, Map<Session, List<Topic>> child) {
-		this.sessions = list;
-		this.sessionCollector = child;
+		this.sessions = new ArrayList<>(list);
+		this.sessionCollector = new HashMap<>(child);
 		notifyDataSetChanged();
 	}
 }

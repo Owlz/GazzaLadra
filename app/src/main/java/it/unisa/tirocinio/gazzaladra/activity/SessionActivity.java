@@ -27,6 +27,7 @@ import java.util.Map;
 import it.unisa.tirocinio.gazzaladra.ExpandableListAdapter;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.database.Session;
+import it.unisa.tirocinio.gazzaladra.database.SessionTopic;
 import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.User;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
@@ -36,12 +37,11 @@ public class SessionActivity extends AppCompatActivity {
 	private ImageView avatar;
 
 	private List<Session> sessioniUtente;
-	private List<String> moltiQuiz;
 	private Map<Session, List<Topic>> sessionCollector;
 	private ExpandableListView expListView;
 
-	private User utente;
-	private int numSessioniSvolte;
+	private User user;
+	private int numSessions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,39 +50,38 @@ public class SessionActivity extends AppCompatActivity {
 
 		Toolbar toolbar = findViewById(R.id.MyToolbar);
 		Intent i = getIntent();
-		utente = i.getParcelableExtra("user");
+		user = i.getParcelableExtra("user");
 
-		toolbar.setTitle(utente.getName() + " " + utente.getLastName());
+		toolbar.setTitle(user.getName() + " " + user.getLastName());
 		setSupportActionBar(toolbar);
 
 		avatar = findViewById(R.id.bgheader);
 		FileInputStream inStream;
 		try {
-			inStream = openFileInput(utente.getPhoto());
+			inStream = openFileInput(user.getPhoto());
 			Bitmap b = BitmapFactory.decodeStream(inStream);
 			avatar.setImageBitmap(b);
 		} catch (Exception e) {
-			Log.w("SessionActivity", "Errore mentre si decoficicava la foto profilo");
+			Log.e("SessionActivity", "Errore mentre si decoficicava la foto profilo");
 			e.printStackTrace();
+
 		}
 
 		FloatingActionButton fab = findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Session s = new Session(
-						utente.getUid(),
-						numSessioniSvolte++,
-						DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ITALY).format(new Date())
-				);
+				String date = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ITALY).format(new Date());
+				Session s = new Session(user.getUidUser(), numSessions, date);
+
 				Intent i = new Intent(getApplicationContext(), QuizActivity.class);
-				Log.w("SessionActivity", "pre put intent: " + s);
 				i.putExtra("session", s);
 
 				startActivity(i);
 			}
 		});
 
+		//initialization for the first draw (empty)
 		sessioniUtente = new ArrayList<>();
 		sessionCollector = new HashMap<>();
 
@@ -91,23 +90,22 @@ public class SessionActivity extends AppCompatActivity {
 		expListView.setAdapter(adapter);
 
 		uvm = ViewModelProviders.of(this).get(UserViewModel.class);
-		uvm.getSessionByUser(utente.getUid()).observe(this, new Observer<List<Session>>() {
+		uvm.getCompleteSessionByUser(user.getUidUser()).observe(this, new Observer<List<SessionTopic>>() {
 			@Override
-			public void onChanged(@Nullable List<Session> session) {
-				sessioniUtente = session;
-				numSessioniSvolte = session.size();
+			public void onChanged(@Nullable List<SessionTopic> sessionTopics) {
+				if (sessionTopics == null) return;
 
-				sessionCollector = new HashMap<>();
+				numSessions = sessionTopics.size() + 1;
 
-				for (Session s : sessioniUtente) {
-					List<Topic> mom = uvm.getTopicBySession(s.getUid()).getValue();
-					Log.w("topic", "" + mom);
-					sessionCollector.put(s, mom);
+				sessioniUtente.clear();
+				sessionCollector.clear();
+
+				for (SessionTopic st : sessionTopics) {
+					sessioniUtente.add(st.session);
+					sessionCollector.put(st.session, st.topicList);
 				}
 				adapter.setSessions(sessioniUtente, sessionCollector);
-
 			}
 		});
-
 	}
 }

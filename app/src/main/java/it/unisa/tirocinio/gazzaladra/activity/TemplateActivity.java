@@ -7,7 +7,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -15,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import it.unisa.tirocinio.gazzaladra.SensorData;
 import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomGestureListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomScaleDetectorListener;
@@ -23,23 +25,44 @@ import it.unisa.tirocinio.gazzaladra.database.Session;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
 public abstract class TemplateActivity extends AppCompatActivity implements SensorEventListener, WriteDataCallback {
-
+	/**
+	 * Per inizializzare un templateactivity c'è bisogno di:
+	 * - session folder setSessionFolder()
+	 * - activityID setActivityId()
+	 * - fragmentID setFragmentId()
+	 */
 	private String sessionFolder = null;
-	protected void setSession(Session s) {
-		sessionFolder = "GazzaLadra" + "/" + s.getUidUser() + "/" + s.getNumSession();
+	private String activityId = null;
+	private String fragmentId = null;
+
+	public void setSessionFolder(Session s) {
+		sessionFolder = "GazzaLadra" + "/" + s.getUidU() + "/" + s.getNumSession();
 	}
 
-	protected String getSessionFolder() {
+	public String getSessionFolder() {
 		if (sessionFolder == null || sessionFolder.equals(""))
 			throw new RuntimeException("Impossibile ottenere la cartella, l'hai inizializzata?");
 		return sessionFolder;
 	}
 
-	//Activity related data
-	private String activityId;
-
 	public void setActivityId(String id) {
-		this.activityId = id;
+		activityId = id;
+	}
+
+	public String getActivityId() {
+		if (activityId == null || activityId.equals(""))
+			throw new RuntimeException("Impossibile ottenere l'activity id, l'hai inizializzato?");
+		return activityId;
+	}
+
+	public void setFragmentId(String id) {
+		fragmentId = id;
+	}
+
+	public String getFragmentId() {
+		if (fragmentId == null || fragmentId.equals(""))
+			throw new RuntimeException("Impossibile ottenere il fragment id, l'hai inizializzato?");
+		return fragmentId;
 	}
 
 	private long startActivityTime;
@@ -54,16 +77,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	private GestureDetector gd;
 	private ScaleGestureDetector sgd;
 
-	//Data
-	private View rootView;
-
-	public void setRootView(View root) {
-		rootView = root;
-		OnTouchDispatcher dp = new OnTouchDispatcher();
-		for (View v : Utils.getAllChildrenBFS(root))
-			v.setOnTouchListener(dp);
-	}
-
+	//Data Structures
+	private ArrayList<SensorData> sensorDataCollected;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +86,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 		if (savedInstanceState != null) {
 			startActivityTime = savedInstanceState.getLong("startActivityTime");
+			sensorDataCollected = savedInstanceState.getParcelableArrayList("sensorDataCollected");
 		} else {
 			startActivityTime = System.currentTimeMillis();
+			sensorDataCollected = new ArrayList<>();
 		}
 
 		gd = new GestureDetector(this, new CustomGestureListener(this));
@@ -111,8 +128,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-
 		outState.putLong("startActivityTime", startActivityTime);
+		outState.putParcelableArrayList("sensorDataCollected", sensorDataCollected);
 	}
 
 	@Override
@@ -120,13 +137,13 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		String fileName;
 		switch (event.sensor.getType()) {
 			case Sensor.TYPE_ACCELEROMETER:
-				fileName = "Accelerometer.txt";
+				fileName = "accelerometer";
 				break;
 			case Sensor.TYPE_GYROSCOPE:
-				fileName = "Gyroscope.txt";
+				fileName = "gyroscope";
 				break;
 			case Sensor.TYPE_MAGNETIC_FIELD:
-				fileName = "Magnetic.txt";
+				fileName = "magnetic";
 				break;
 			default:
 				return;
@@ -135,13 +152,24 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		String y = "" + event.values[1];
 		String z = "" + event.values[2];
 
+		SensorData sd = new SensorData(
+				fileName,
+				System.currentTimeMillis(),
+				Utils.getTimeRelativeTo(startActivityTime),
+				getActivityId(),
+				getFragmentId(),
+				x, y, z,
+				Utils.getOrientation(this)
+		);
+		sensorDataCollected.add(sd);
+		/*
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
-				activityId,
+				//activityId,
 				x, y, z,
 				"" + Utils.getOrientation(this)
-		}, sessionFolder, fileName);
+		}, sessionFolder, fileName);*/
 	}
 
 	String viewClicked = null;
@@ -174,13 +202,13 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
-				activityId,
+				//activityId,
 				"" + event.getX(),
 				"" + event.getY(),
 				"" + event.getPressure(),
 				"" + actionId,
 				getWidgetIfAny(),
-		}, sessionFolder, "rawOnTouchEvent.txt");
+		}, sessionFolder, "rawOnTouchEvent");
 
 		viewClicked = null;
 		return super.onTouchEvent(event);
@@ -188,12 +216,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	// we get info about the widget clicked
 	public boolean widgetTouchDispatcher(View v, MotionEvent event) {
-		Log.w("widgetTouch", "Siamo nel widgetTouchDispatcher " + v.getClass().getName());
 		if (!(v instanceof ViewGroup)) {
 //			String[] a = v.getClass().getName().split("\\.");
 //			viewClicked = a[a.length-1];
 			viewClicked = v.getClass().getName();
-			Log.w("widgetTouch", "nell'if");
 		}
 		return onTouchEvent(event);
 	}
@@ -215,7 +241,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
-				activityId,
+				//	activityId,
 				event,
 				"" + e.getX(),
 				"" + e.getX(),
@@ -223,7 +249,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				"" + e.getSize(),
 				getWidgetIfAny(),
 				"" + Utils.getOrientation(this)
-		}, sessionFolder, "SingleEvents.txt");
+		}, sessionFolder, "SingleEvents");
 	}
 
 	@Override
@@ -232,11 +258,11 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
-				activityId,
+				//activityId,
 				"" + keyCode,
 				"" + position,
 				"" + Utils.getOrientation(this)
-		}, sessionFolder, "KeyPressEvent.txt");
+		}, sessionFolder, "KeyPressEvent");
 	}
 
 	@Override
@@ -244,13 +270,13 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
-				activityId,
+				//activityId,
 				"" + scaleGestureDetector.getCurrentSpan(),
 				"" + scaleGestureDetector.getScaleFactor(),
 				"" + scaleGestureDetector.getTimeDelta(),
 				"" + getWidgetIfAny(),
 				"" + Utils.getOrientation(this)
-		}, sessionFolder, "DoubleFingerEvents.txt");
+		}, sessionFolder, "DoubleFingerEvents");
 
 	}
 
