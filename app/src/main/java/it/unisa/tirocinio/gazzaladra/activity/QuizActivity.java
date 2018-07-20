@@ -20,6 +20,7 @@ import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.IntermediateFragment;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.RiepologFragment;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
+import it.unisa.tirocinio.gazzaladra.data.KeyPressData;
 import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
 import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
@@ -176,6 +177,10 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 					AsyncFileWriter.write(s.toStringArray(), QuizActivity.super.getSessionFolder(), "scaleEvent");
 				}
 
+				for (KeyPressData k : QuizActivity.super.getKeyPressDataCollected()) {
+					AsyncFileWriter.write(k.toStringArray(), QuizActivity.super.getSessionFolder(), "keyPress");
+				}
+
 				for (FragmentData r : fragmentResultData) {
 					AsyncFileWriter.write(new String[]{
 							r.getIdFragment(),
@@ -189,6 +194,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 
 					uvm.insert(new Topic(session.getUidSession(), r.getIdFragment(), r.isComplete()));
 				}
+
 				AsyncFileWriter.write(new String[]{
 						"" + session.getUidU(),
 						"" + session.getUidSession(),

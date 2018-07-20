@@ -27,7 +27,7 @@ public class CustomTextWatcher implements TextWatcher {
 		int len2 = lastWords.length;
 
 		boolean isAutocorrected = false;
-		//TODO: refactor
+		//TODO: vedere se funziona che non lo ricordo
 		if (len1 == 0 || len2 == 0) return;
 
 		if (len1 == len2) {

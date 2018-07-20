@@ -27,4 +27,6 @@ public interface WriteDataCallback {
 	 * @param eventType the type of event
 	 */
 	void fireSingleEvent(MotionEvent event, int eventType);
+
+
 }

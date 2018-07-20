@@ -33,7 +33,6 @@ public class UserRepository {
 		return userDAO.getCompleteSessionsById(id);
 	}
 
-	//todo: dovrebbero ritornare long
 	public void insert(User user) {
 		new InsertAsyncTask().execute(user);
 	}

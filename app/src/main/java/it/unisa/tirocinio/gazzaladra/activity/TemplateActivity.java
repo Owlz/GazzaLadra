@@ -20,12 +20,12 @@ import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomGestureListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomScaleDetectorListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.WriteDataCallback;
+import it.unisa.tirocinio.gazzaladra.data.KeyPressData;
 import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
 import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
 import it.unisa.tirocinio.gazzaladra.data.SingleFingerEventData;
 import it.unisa.tirocinio.gazzaladra.database.Session;
-import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
 public abstract class TemplateActivity extends AppCompatActivity implements SensorEventListener, WriteDataCallback {
 	/**
@@ -85,6 +85,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	private ArrayList<RawTouchData> rawTouchDataCollected;
 	private ArrayList<ScaleEventData> scaleEventDataCollected;
 	private ArrayList<SingleFingerEventData> singleFingerEventDataCollected;
+	private ArrayList<KeyPressData> keyPressDataCollected;
 
 	public ArrayList<SensorData> getSensorDataCollected() {
 		return sensorDataCollected;
@@ -102,6 +103,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		return singleFingerEventDataCollected;
 	}
 
+	public ArrayList<KeyPressData> getKeyPressDataCollected() {
+		return keyPressDataCollected;
+	}
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,12 +117,14 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			rawTouchDataCollected = savedInstanceState.getParcelableArrayList("rawTouchDataCollected");
 			scaleEventDataCollected = savedInstanceState.getParcelableArrayList("scaleEventDataCollected");
 			singleFingerEventDataCollected = savedInstanceState.getParcelableArrayList("singleFingerEventDataCollected");
+			keyPressDataCollected = savedInstanceState.getParcelableArrayList("keyPressDataCollected");
 		} else {
 			startActivityTime = System.currentTimeMillis();
 			sensorDataCollected = new ArrayList<>();
 			singleFingerEventDataCollected = new ArrayList<>();
 			scaleEventDataCollected = new ArrayList<>();
 			rawTouchDataCollected = new ArrayList<>();
+			keyPressDataCollected = new ArrayList<>();
 		}
 
 		gd = new GestureDetector(this, new CustomGestureListener(this));
@@ -161,6 +168,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		outState.putParcelableArrayList("rawTouchDataCollected", rawTouchDataCollected);
 		outState.putParcelableArrayList("singleFingerEventDataCollected", singleFingerEventDataCollected);
 		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
+		outState.putParcelableArrayList("keyPressDataCollected", keyPressDataCollected);
 
 	}
 
@@ -294,14 +302,16 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	@Override
 	public void fireKeyPress(int keyCode, int position) {
-		AsyncFileWriter.write(new String[]{
-				"" + Utils.getSystime(),
-				"" + Utils.getTimeRelativeTo(startActivityTime),
-				//activityId,
+		KeyPressData kpd = new KeyPressData(
+				millisecTouchEventStart,
+				millisecOffset,
+				this.getActivityId(),
+				this.getFragmentId(),
 				"" + keyCode,
 				"" + position,
 				"" + Utils.getOrientation(this)
-		}, sessionFolder, "KeyPressEvent");
+		);
+		keyPressDataCollected.add(kpd);
 	}
 
 	@Override

@@ -10,22 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
-	//TODO: Cambiare questa classe
-
-	public static long getSystime() {
-		return System.currentTimeMillis();
-	}
-
 	public static long getTimeRelativeTo(long time) {
 		return Math.abs(time - System.currentTimeMillis());
 	}
 
 	public static int getOrientation(Activity activity) {
-		final int orientation =
-				((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE))
-						.getDefaultDisplay()
-						.getRotation();
-		return orientation;
+		return ((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE))
+				.getDefaultDisplay()
+				.getRotation();
 	}
 
 	public static List<View> getAllChildrenBFS(View v) {

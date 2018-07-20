@@ -60,7 +60,7 @@ public class IntermediateFragment extends FragmentTemplate {
 			scenario = savedInstanceState.getString("scenario");
 		}
 
-		//todo: fragment di gioco
+		//todo: decidere se tutti i fragment generano click o solo i "topic"
 //		for (View child : Utils.getAllChildrenBFS(v)) {
 //			child.setOnTouchListener(new View.OnTouchListener() {
 //				@Override
