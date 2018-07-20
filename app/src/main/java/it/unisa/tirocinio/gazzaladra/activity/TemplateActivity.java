@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomGestureListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomScaleDetectorListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.WriteDataCallback;
 import it.unisa.tirocinio.gazzaladra.data.KeyPressData;
+import it.unisa.tirocinio.gazzaladra.data.MoveEventData;
 import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
 import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
@@ -39,7 +41,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	private String fragmentId = null;
 
 	public void setSessionFolder(Session s) {
-		sessionFolder = "GazzaLadra" + "/" + s.getUidU() + "/" + s.getNumSession();
+		String userName = String.format(Locale.ITALY, "%03d", s.getUidU());
+		String sessionNum = String.format(Locale.ITALY, "%03d", s.getNumSession());
+
+		sessionFolder = "GazzaLadra" + "/" + userName + "/" + sessionNum;
 	}
 
 	public String getSessionFolder() {
@@ -86,6 +91,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	private ArrayList<ScaleEventData> scaleEventDataCollected;
 	private ArrayList<SingleFingerEventData> singleFingerEventDataCollected;
 	private ArrayList<KeyPressData> keyPressDataCollected;
+	private ArrayList<MoveEventData> moveEventDataCollected;
 
 	public ArrayList<SensorData> getSensorDataCollected() {
 		return sensorDataCollected;
@@ -107,6 +113,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		return keyPressDataCollected;
 	}
 
+	public ArrayList<MoveEventData> getMoveEventDataCollected() {
+		return moveEventDataCollected;
+	}
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,6 +128,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			scaleEventDataCollected = savedInstanceState.getParcelableArrayList("scaleEventDataCollected");
 			singleFingerEventDataCollected = savedInstanceState.getParcelableArrayList("singleFingerEventDataCollected");
 			keyPressDataCollected = savedInstanceState.getParcelableArrayList("keyPressDataCollected");
+			moveEventDataCollected = savedInstanceState.getParcelableArrayList("moveEventDataCollected");
 		} else {
 			startActivityTime = System.currentTimeMillis();
 			sensorDataCollected = new ArrayList<>();
@@ -125,6 +136,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			scaleEventDataCollected = new ArrayList<>();
 			rawTouchDataCollected = new ArrayList<>();
 			keyPressDataCollected = new ArrayList<>();
+			moveEventDataCollected = new ArrayList<>();
 		}
 
 		gd = new GestureDetector(this, new CustomGestureListener(this));
@@ -169,7 +181,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		outState.putParcelableArrayList("singleFingerEventDataCollected", singleFingerEventDataCollected);
 		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
 		outState.putParcelableArrayList("keyPressDataCollected", keyPressDataCollected);
-
+		outState.putParcelableArrayList("moveEventDataCollected", moveEventDataCollected);
 	}
 
 	@Override
@@ -260,6 +272,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	// we get info about the widget clicked
 	public boolean widgetTouchDispatcher(View v, MotionEvent event) {
+
 		if (!(v instanceof ViewGroup)) {
 //			String[] a = v.getClass().getName().split("\\.");
 //			viewClicked = a[a.length-1];
@@ -292,7 +305,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				"" + e.getX(),
 				"" + e.getY(),
 				"" + e.getPressure(),
-				viewClicked,
+				getWidgetIfAny(),
 				Utils.getOrientation(this)
 		);
 
@@ -335,6 +348,36 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		);
 
 		scaleEventDataCollected.add(scaleEventData);
+	}
+
+	@Override
+	public void fireMoveEvent(MotionEvent e, float distX, float distY, int eventType) {
+		String event = "";
+		switch (eventType) {
+			case CustomGestureListener.FLING:
+				event = "Fling";
+				break;
+			case CustomGestureListener.SCROLL:
+				event = "Scroll";
+				break;
+		}
+
+		MoveEventData m = new MoveEventData(
+				millisecTouchEventStart,
+				millisecOffset,
+				this.getActivityId(),
+				this.getFragmentId(),
+				event,
+				"" + e.getX(),
+				"" + e.getY(),
+				"" + distX,
+				"" + distY,
+				"" + e.getPressure(),
+				getWidgetIfAny(),
+				Utils.getOrientation(this)
+		);
+
+		moveEventDataCollected.add(m);
 	}
 
 	@Override

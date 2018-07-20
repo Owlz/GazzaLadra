@@ -19,7 +19,7 @@ public abstract class UserDB extends RoomDatabase {
 							.databaseBuilder(
 									context.getApplicationContext(),
 									UserDB.class,
-									"user-db7-testing")
+									"user-db8-testing")
 							.build();
 
 				}

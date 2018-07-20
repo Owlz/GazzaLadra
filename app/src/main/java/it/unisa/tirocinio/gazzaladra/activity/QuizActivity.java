@@ -15,12 +15,14 @@ import java.util.List;
 
 import it.unisa.tirocinio.gazzaladra.QuizMaker;
 import it.unisa.tirocinio.gazzaladra.R;
+import it.unisa.tirocinio.gazzaladra.activity.fragment.ErrorFragment;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.IntermediateFragment;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.RiepologFragment;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 import it.unisa.tirocinio.gazzaladra.data.KeyPressData;
+import it.unisa.tirocinio.gazzaladra.data.MoveEventData;
 import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
 import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
@@ -30,7 +32,7 @@ import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
-public class QuizActivity extends TemplateActivity implements IntermediateFragment.IntermediateFragmentCallback, FragmentComunicator, RiepologFragment.RiepilogoFragmentCallback {
+public class QuizActivity extends TemplateActivity implements IntermediateFragment.IntermediateFragmentCallback, FragmentComunicator, RiepologFragment.RiepilogoFragmentCallback, ErrorFragment.ErrorFragmentCallback {
 	private FragmentManager fm;
 	private List<String> fragments;
 	private List<String> scenari;
@@ -181,6 +183,10 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 					AsyncFileWriter.write(k.toStringArray(), QuizActivity.super.getSessionFolder(), "keyPress");
 				}
 
+				for (MoveEventData m : QuizActivity.super.getMoveEventDataCollected()) {
+					AsyncFileWriter.write(m.toStringArray(), QuizActivity.super.getSessionFolder(), "moveEvent");
+				}
+
 				for (FragmentData r : fragmentResultData) {
 					AsyncFileWriter.write(new String[]{
 							r.getIdFragment(),
@@ -233,5 +239,24 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	@Override
 	public void riepilogoCallback() {
 		/*code*/
+	}
+
+	@Override
+	public void ritorna() {
+		super.onBackPressed();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
+				getApplicationContext(),
+				ErrorFragment.class.getName()
+		);
+		fm.beginTransaction()
+				.replace(R.id.fragmentContainer, frag)
+				.commit();
+
+		QuizActivity.super.setFragmentId(frag.getFragmentId());
 	}
 }

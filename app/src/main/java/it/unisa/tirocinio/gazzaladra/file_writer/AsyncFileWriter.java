@@ -22,8 +22,12 @@ public class AsyncFileWriter {
 
 		boolean firstVal = true;
 		for (String val : values) {
-			if (val == null) continue;
-
+			if (val == null) {
+				for (String v : values) {
+					Log.e("Values:", "" + v);
+				}
+				throw new RuntimeException("Valore nullo mentre parsavo la stringa sopra descritta ^");
+			}
 			if (!firstVal) {
 				out.append(",");
 			}

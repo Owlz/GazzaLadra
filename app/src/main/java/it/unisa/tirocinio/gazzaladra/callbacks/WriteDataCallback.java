@@ -28,5 +28,5 @@ public interface WriteDataCallback {
 	 */
 	void fireSingleEvent(MotionEvent event, int eventType);
 
-
+	void fireMoveEvent(MotionEvent event, float distX, float distY, int eventType);
 }
