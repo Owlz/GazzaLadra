@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,10 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	private ProgressDialog dialog;
 	private Handler handler;
 
+	private long lastBackPressed;
+	private boolean showToast;
+	private boolean isQuitting;
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -53,6 +58,9 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 		outState.putInt("fragmentIndex", fragmentIndex);
 		outState.putString("currScenario", currScenario);
 		outState.putParcelableArrayList("fragmentResultData", fragmentResultData);
+		outState.putLong("lastBackPressed", lastBackPressed);
+		outState.putBoolean("showToast", showToast);
+		outState.putBoolean("isQuitting", isQuitting);
 	}
 
 	@Override
@@ -78,11 +86,17 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 			fragmentIndex = saved.getInt("fragmentIndex");
 			currScenario = saved.getString("currScenario");
 			fragmentResultData = saved.getParcelableArrayList("fragmentResultData");
+			lastBackPressed = saved.getLong("lastBackPressed");
+			showToast = saved.getBoolean("showToast");
+			isQuitting = saved.getBoolean("isQuitting");
 
 		} else {
 			fragmentResultData = new ArrayList<>();
 			timeActivityStart = System.currentTimeMillis();
 			fragmentIndex = 0;
+			lastBackPressed = 0;
+			showToast = false;
+			isQuitting = false;
 
 			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(1);
 			fragments = p.first;
@@ -247,16 +261,44 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	}
 
 	@Override
+	public void onBackPressed() {
+		if (fm.findFragmentById(R.id.fragmentContainer) instanceof RiepologFragment)
+			super.onBackPressed();
+		else {
+			long actualPress = System.currentTimeMillis();
+
+			if ((actualPress - lastBackPressed) > 500) {
+				if (!showToast) {
+					Toast.makeText(this, "Premi due volte \"indietro\" per annullare la sessione", Toast.LENGTH_SHORT).show();
+					showToast = true;
+				}
+				lastBackPressed = System.currentTimeMillis();
+			} else {
+				isQuitting = true;
+				super.onBackPressed();
+			}
+		}
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
-		FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
-				getApplicationContext(),
-				ErrorFragment.class.getName()
-		);
-		fm.beginTransaction()
-				.replace(R.id.fragmentContainer, frag)
-				.commit();
 
-		QuizActivity.super.setFragmentId(frag.getFragmentId());
+
+		if (!isQuitting) {
+			Fragment f = fm.findFragmentById(R.id.fragmentContainer);
+			if (f instanceof RiepologFragment)
+				return;
+
+			FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
+					getApplicationContext(),
+					ErrorFragment.class.getName()
+			);
+			fm.beginTransaction()
+					.replace(R.id.fragmentContainer, frag)
+					.commit();
+
+			QuizActivity.super.setFragmentId(frag.getFragmentId());
+		}
 	}
 }
