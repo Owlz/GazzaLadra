@@ -16,11 +16,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import it.unisa.tirocinio.gazzaladra.SensorData;
 import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomGestureListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomScaleDetectorListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.WriteDataCallback;
+import it.unisa.tirocinio.gazzaladra.data.SensorData;
 import it.unisa.tirocinio.gazzaladra.database.Session;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
@@ -79,6 +79,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	//Data Structures
 	private ArrayList<SensorData> sensorDataCollected;
+
+	public ArrayList<SensorData> getSensorDataCollected() {
+		return sensorDataCollected;
+	}
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,14 +166,6 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				Utils.getOrientation(this)
 		);
 		sensorDataCollected.add(sd);
-		/*
-		AsyncFileWriter.write(new String[]{
-				"" + Utils.getSystime(),
-				"" + Utils.getTimeRelativeTo(startActivityTime),
-				//activityId,
-				x, y, z,
-				"" + Utils.getOrientation(this)
-		}, sessionFolder, fileName);*/
 	}
 
 	String viewClicked = null;

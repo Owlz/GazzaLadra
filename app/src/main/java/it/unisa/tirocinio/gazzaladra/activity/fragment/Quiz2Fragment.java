@@ -18,10 +18,10 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.unisa.tirocinio.gazzaladra.FragmentData;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
+import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 
 public class Quiz2Fragment extends FragmentTemplate implements View.OnClickListener {

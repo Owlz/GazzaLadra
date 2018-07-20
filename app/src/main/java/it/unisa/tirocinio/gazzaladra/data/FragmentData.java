@@ -1,4 +1,4 @@
-package it.unisa.tirocinio.gazzaladra;
+package it.unisa.tirocinio.gazzaladra.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

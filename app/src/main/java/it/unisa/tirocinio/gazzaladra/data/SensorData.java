@@ -1,9 +1,7 @@
-package it.unisa.tirocinio.gazzaladra;
+package it.unisa.tirocinio.gazzaladra.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
 public class SensorData implements Parcelable {
 	public String sensorName;
@@ -26,8 +24,8 @@ public class SensorData implements Parcelable {
 		this.deviceOrientation = deviceOrientation;
 	}
 
-	public String toCSV() {
-		return AsyncFileWriter.parseLines(new String[]{
+	public String[] toStringArray() {
+		return new String[]{
 				sensorName,
 				"" + timeEvent,
 				"" + relativeToStartTimeEvent,
@@ -35,7 +33,7 @@ public class SensorData implements Parcelable {
 				fragmentId,
 				x, y, z,
 				"" + deviceOrientation
-		});
+		};
 	}
 
 	protected SensorData(Parcel in) {
