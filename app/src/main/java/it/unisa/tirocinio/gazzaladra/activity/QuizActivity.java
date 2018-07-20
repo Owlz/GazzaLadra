@@ -20,7 +20,10 @@ import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.IntermediateFragment;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.RiepologFragment;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
+import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
+import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
+import it.unisa.tirocinio.gazzaladra.data.SingleFingerEventData;
 import it.unisa.tirocinio.gazzaladra.database.Session;
 import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
@@ -161,6 +164,17 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 					AsyncFileWriter.write(sd.toStringArray(), QuizActivity.super.getSessionFolder(), sd.sensorName);
 				}
 
+				for (RawTouchData r : QuizActivity.super.getRawTouchDataCollected()) {
+					AsyncFileWriter.write(r.toStringArray(), QuizActivity.super.getSessionFolder(), "rawTouch");
+				}
+
+				for (SingleFingerEventData s : QuizActivity.super.getSingleFingerEventDataCollected()) {
+					AsyncFileWriter.write(s.toStringArray(), QuizActivity.super.getSessionFolder(), "singleFinger");
+				}
+
+				for (ScaleEventData s : QuizActivity.super.getScaleEventDataCollected()) {
+					AsyncFileWriter.write(s.toStringArray(), QuizActivity.super.getSessionFolder(), "scaleEvent");
+				}
 
 				for (FragmentData r : fragmentResultData) {
 					AsyncFileWriter.write(new String[]{
@@ -183,8 +197,6 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 						"" + timeActivityStart,
 						"" + System.currentTimeMillis()
 				}, QuizActivity.super.getSessionFolder(), "activity");
-
-				//// todo: salvare tutto il resto
 
 				runOnUiThread(new Runnable() {
 
@@ -209,8 +221,6 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 			public void handleMessage(android.os.Message msg) {
 				dialog.dismiss();
 			}
-
-			;
 		};
 	}
 

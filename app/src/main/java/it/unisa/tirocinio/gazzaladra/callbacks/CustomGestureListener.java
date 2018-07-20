@@ -34,7 +34,7 @@ public class CustomGestureListener extends GestureDetector.SimpleOnGestureListen
 		super.onLongPress(e);
 	}
 
-	//Over-time events
+	//todo: Over-time events
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		return super.onFling(e1, e2, velocityX, velocityY);

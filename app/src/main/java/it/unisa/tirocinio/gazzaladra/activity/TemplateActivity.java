@@ -20,7 +20,10 @@ import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomGestureListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.CustomScaleDetectorListener;
 import it.unisa.tirocinio.gazzaladra.callbacks.WriteDataCallback;
+import it.unisa.tirocinio.gazzaladra.data.RawTouchData;
+import it.unisa.tirocinio.gazzaladra.data.ScaleEventData;
 import it.unisa.tirocinio.gazzaladra.data.SensorData;
+import it.unisa.tirocinio.gazzaladra.data.SingleFingerEventData;
 import it.unisa.tirocinio.gazzaladra.database.Session;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
 
@@ -79,9 +82,24 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	//Data Structures
 	private ArrayList<SensorData> sensorDataCollected;
+	private ArrayList<RawTouchData> rawTouchDataCollected;
+	private ArrayList<ScaleEventData> scaleEventDataCollected;
+	private ArrayList<SingleFingerEventData> singleFingerEventDataCollected;
 
 	public ArrayList<SensorData> getSensorDataCollected() {
 		return sensorDataCollected;
+	}
+
+	public ArrayList<RawTouchData> getRawTouchDataCollected() {
+		return rawTouchDataCollected;
+	}
+
+	public ArrayList<ScaleEventData> getScaleEventDataCollected() {
+		return scaleEventDataCollected;
+	}
+
+	public ArrayList<SingleFingerEventData> getSingleFingerEventDataCollected() {
+		return singleFingerEventDataCollected;
 	}
 
 	@Override
@@ -91,9 +109,15 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		if (savedInstanceState != null) {
 			startActivityTime = savedInstanceState.getLong("startActivityTime");
 			sensorDataCollected = savedInstanceState.getParcelableArrayList("sensorDataCollected");
+			rawTouchDataCollected = savedInstanceState.getParcelableArrayList("rawTouchDataCollected");
+			scaleEventDataCollected = savedInstanceState.getParcelableArrayList("scaleEventDataCollected");
+			singleFingerEventDataCollected = savedInstanceState.getParcelableArrayList("singleFingerEventDataCollected");
 		} else {
 			startActivityTime = System.currentTimeMillis();
 			sensorDataCollected = new ArrayList<>();
+			singleFingerEventDataCollected = new ArrayList<>();
+			scaleEventDataCollected = new ArrayList<>();
+			rawTouchDataCollected = new ArrayList<>();
 		}
 
 		gd = new GestureDetector(this, new CustomGestureListener(this));
@@ -134,6 +158,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		super.onSaveInstanceState(outState);
 		outState.putLong("startActivityTime", startActivityTime);
 		outState.putParcelableArrayList("sensorDataCollected", sensorDataCollected);
+		outState.putParcelableArrayList("rawTouchDataCollected", rawTouchDataCollected);
+		outState.putParcelableArrayList("singleFingerEventDataCollected", singleFingerEventDataCollected);
+		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
+
 	}
 
 	@Override
@@ -169,10 +197,15 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	}
 
 	String viewClicked = null;
+	long millisecTouchEventStart = 0;
+	long millisecOffset = 0;
 
 	//we get info about the event
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		millisecOffset = System.currentTimeMillis();
+		millisecTouchEventStart = Utils.getTimeRelativeTo(startActivityTime);
+
 		gd.onTouchEvent(event);
 		sgd.onTouchEvent(event);
 
@@ -195,18 +228,25 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				break;
 		}
 
-		AsyncFileWriter.write(new String[]{
-				"" + Utils.getSystime(),
-				"" + Utils.getTimeRelativeTo(startActivityTime),
-				//activityId,
+		RawTouchData rtd = new RawTouchData(
+				millisecTouchEventStart,
+				millisecOffset,
+				this.getActivityId(),
+				this.getFragmentId(),
 				"" + event.getX(),
 				"" + event.getY(),
 				"" + event.getPressure(),
+				"" + event.getSize(),
 				"" + actionId,
 				getWidgetIfAny(),
-		}, sessionFolder, "rawOnTouchEvent");
+				Utils.getOrientation(this)
+		);
+		rawTouchDataCollected.add(rtd);
 
 		viewClicked = null;
+		millisecOffset = -1;
+		millisecTouchEventStart = -1;
+
 		return super.onTouchEvent(event);
 	}
 
@@ -234,23 +274,26 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				event = "Long press";
 				break;
 		}
-		AsyncFileWriter.write(new String[]{
-				"" + Utils.getSystime(),
-				"" + Utils.getTimeRelativeTo(startActivityTime),
-				//	activityId,
+
+		SingleFingerEventData sf = new SingleFingerEventData(
+				millisecTouchEventStart,
+				millisecOffset,
+				this.getActivityId(),
+				this.getFragmentId(),
 				event,
 				"" + e.getX(),
-				"" + e.getX(),
+				"" + e.getY(),
 				"" + e.getPressure(),
-				"" + e.getSize(),
-				getWidgetIfAny(),
-				"" + Utils.getOrientation(this)
-		}, sessionFolder, "SingleEvents");
+				viewClicked,
+				Utils.getOrientation(this)
+		);
+
+		singleFingerEventDataCollected.add(sf);
+
 	}
 
 	@Override
 	public void fireKeyPress(int keyCode, int position) {
-		//TODO: differisce da h-mog, scrivere documentazione
 		AsyncFileWriter.write(new String[]{
 				"" + Utils.getSystime(),
 				"" + Utils.getTimeRelativeTo(startActivityTime),
@@ -262,18 +305,26 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	}
 
 	@Override
-	public void fireDoubleFingerEvent(ScaleGestureDetector scaleGestureDetector) {
-		AsyncFileWriter.write(new String[]{
-				"" + Utils.getSystime(),
-				"" + Utils.getTimeRelativeTo(startActivityTime),
-				//activityId,
-				"" + scaleGestureDetector.getCurrentSpan(),
-				"" + scaleGestureDetector.getScaleFactor(),
-				"" + scaleGestureDetector.getTimeDelta(),
-				"" + getWidgetIfAny(),
-				"" + Utils.getOrientation(this)
-		}, sessionFolder, "DoubleFingerEvents");
+	public void fireDoubleFingerEvent(ScaleGestureDetector scaleDetector) {
+		ScaleEventData scaleEventData = new ScaleEventData(
+				millisecTouchEventStart,
+				millisecOffset,
+				this.getActivityId(),
+				this.getFragmentId(),
+				"" + scaleDetector.getTimeDelta(),
+				"" + scaleDetector.getScaleFactor(),
+				"" + scaleDetector.getCurrentSpanX(),
+				"" + scaleDetector.getCurrentSpanY(),
+				"" + scaleDetector.getCurrentSpan(),
+				"" + scaleDetector.getEventTime(),
+				"" + scaleDetector.getFocusX(),
+				"" + scaleDetector.getFocusY(),
+				"" + scaleDetector.getPreviousSpan(),
+				"" + scaleDetector.getPreviousSpanX(),
+				"" + scaleDetector.getPreviousSpanY()
+		);
 
+		scaleEventDataCollected.add(scaleEventData);
 	}
 
 	@Override
