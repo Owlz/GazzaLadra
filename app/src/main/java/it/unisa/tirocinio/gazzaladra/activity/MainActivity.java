@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 				if (users.size() == 0) {
 					rv.setLayoutManager(null);
 					warning.setVisibility(View.VISIBLE);
-				} else if (users.size() != 0) {
+				} else {
 					rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
 					warning.setVisibility(View.GONE);
 					firstDraw = false;

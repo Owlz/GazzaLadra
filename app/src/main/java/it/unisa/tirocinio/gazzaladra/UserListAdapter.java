@@ -1,9 +1,11 @@
 package it.unisa.tirocinio.gazzaladra;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.util.List;
@@ -36,12 +39,31 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 				public void onClick(View v) {
 					Intent i = new Intent(context, SessionActivity.class);
 					if (user != null) {
-						Log.w("UserListAdapter", "user non nullo");
 						i.putExtra("user", user);
-					} else {
-						Log.w("UserListAdapter", "user null");
 					}
 					context.startActivity(i);
+				}
+			});
+
+			userView.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(context);
+					builder.setCancelable(true)
+							.setMessage("Vuoi cancellare l'utente " + user.getName() + " " + user.getLastName() + "?")
+							.setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									Toast.makeText(context, "Puff ded", Toast.LENGTH_SHORT).show();
+									dialog.dismiss();
+								}
+							})
+							.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									dialog.dismiss();
+								}
+							})
+							.create().show();
+					return true;
 				}
 			});
 		}

@@ -304,8 +304,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		}
 
 		SingleFingerEventData sf = new SingleFingerEventData(
-				millisecTouchEventStart,
 				millisecOffset,
+				millisecTouchEventStart,
 				this.getActivityId(),
 				this.getFragmentId(),
 				event,
@@ -323,8 +323,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	@Override
 	public void fireKeyPress(int keyCode, int position) {
 		KeyPressData kpd = new KeyPressData(
-				millisecTouchEventStart,
 				millisecOffset,
+				millisecTouchEventStart,
 				this.getActivityId(),
 				this.getFragmentId(),
 				"" + keyCode,
@@ -337,8 +337,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	@Override
 	public void fireDoubleFingerEvent(ScaleGestureDetector scaleDetector) {
 		ScaleEventData scaleEventData = new ScaleEventData(
-				millisecTouchEventStart,
 				millisecOffset,
+				millisecTouchEventStart,
 				this.getActivityId(),
 				this.getFragmentId(),
 				scaleDetector.getTimeDelta(),
@@ -370,8 +370,8 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		}
 
 		MoveEventData m = new MoveEventData(
-				millisecTouchEventStart,
 				millisecOffset,
+				millisecTouchEventStart,
 				this.getActivityId(),
 				this.getFragmentId(),
 				event,
