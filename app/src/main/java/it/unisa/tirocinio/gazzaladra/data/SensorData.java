@@ -3,16 +3,32 @@ package it.unisa.tirocinio.gazzaladra.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import it.unisa.tirocinio.gazzaladra.Utils;
+
 public class SensorData implements Parcelable {
 	public String sensorName;
 	public long timeEvent;
 	public long relativeToStartTimeEvent;
 	public String activityId;
 	public String fragmentId;
-	public String x, y, z;
+	public float x, y, z;
 	public int deviceOrientation;
 
-	public SensorData(String sensorName, long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, String x, String y, String z, int deviceOrientation) {
+	public String[] toStringArray() {
+		return new String[]{
+				sensorName,
+				"" + timeEvent,
+				"" + relativeToStartTimeEvent,
+				activityId,
+				fragmentId,
+				Utils.getFormatted(x),
+				Utils.getFormatted(y),
+				Utils.getFormatted(z),
+				"" + deviceOrientation
+		};
+	}
+
+	public SensorData(String sensorName, long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, float x, float y, float z, int deviceOrientation) {
 		this.sensorName = sensorName;
 		this.timeEvent = timeEvent;
 		this.relativeToStartTimeEvent = relativeToStartTimeEvent;
@@ -24,30 +40,6 @@ public class SensorData implements Parcelable {
 		this.deviceOrientation = deviceOrientation;
 	}
 
-	public String[] toStringArray() {
-		return new String[]{
-				sensorName,
-				"" + timeEvent,
-				"" + relativeToStartTimeEvent,
-				activityId,
-				fragmentId,
-				x, y, z,
-				"" + deviceOrientation
-		};
-	}
-
-	protected SensorData(Parcel in) {
-		sensorName = in.readString();
-		timeEvent = in.readLong();
-		relativeToStartTimeEvent = in.readLong();
-		activityId = in.readString();
-		fragmentId = in.readString();
-		x = in.readString();
-		y = in.readString();
-		z = in.readString();
-		deviceOrientation = in.readInt();
-	}
-
 	@Override
 	public int describeContents() {
 		return 0;
@@ -55,22 +47,33 @@ public class SensorData implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(sensorName);
-		dest.writeLong(timeEvent);
-		dest.writeLong(relativeToStartTimeEvent);
-		dest.writeString(activityId);
-		dest.writeString(fragmentId);
-		dest.writeString(x);
-		dest.writeString(y);
-		dest.writeString(z);
-		dest.writeInt(deviceOrientation);
+		dest.writeString(this.sensorName);
+		dest.writeLong(this.timeEvent);
+		dest.writeLong(this.relativeToStartTimeEvent);
+		dest.writeString(this.activityId);
+		dest.writeString(this.fragmentId);
+		dest.writeFloat(this.x);
+		dest.writeFloat(this.y);
+		dest.writeFloat(this.z);
+		dest.writeInt(this.deviceOrientation);
 	}
 
-	@SuppressWarnings("unused")
-	public static final Parcelable.Creator<SensorData> CREATOR = new Parcelable.Creator<SensorData>() {
+	protected SensorData(Parcel in) {
+		this.sensorName = in.readString();
+		this.timeEvent = in.readLong();
+		this.relativeToStartTimeEvent = in.readLong();
+		this.activityId = in.readString();
+		this.fragmentId = in.readString();
+		this.x = in.readFloat();
+		this.y = in.readFloat();
+		this.z = in.readFloat();
+		this.deviceOrientation = in.readInt();
+	}
+
+	public static final Creator<SensorData> CREATOR = new Creator<SensorData>() {
 		@Override
-		public SensorData createFromParcel(Parcel in) {
-			return new SensorData(in);
+		public SensorData createFromParcel(Parcel source) {
+			return new SensorData(source);
 		}
 
 		@Override

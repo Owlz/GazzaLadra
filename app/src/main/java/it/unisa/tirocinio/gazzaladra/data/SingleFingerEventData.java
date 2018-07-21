@@ -3,18 +3,35 @@ package it.unisa.tirocinio.gazzaladra.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import it.unisa.tirocinio.gazzaladra.Utils;
+
 public class SingleFingerEventData implements Parcelable {
 	public long timeEvent;
 	public long relativeToStartTimeEvent;
 	public String activityId;
 	public String fragmentId;
 	public String eventCaptured;
-	public String x, y;
-	public String pressure;
+	public float x, y;
+	public float pressure;
 	public String clickedWidget;
 	public int deviceOrientation;
 
-	public SingleFingerEventData(long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, String eventCaptured, String x, String y, String pressure, String clickedWidget, int deviceOrientation) {
+	public String[] toStringArray() {
+		return new String[]{
+				this.activityId,
+				this.fragmentId,
+				"" + this.timeEvent,
+				"" + this.relativeToStartTimeEvent,
+				this.eventCaptured,
+				Utils.getFormatted(x),
+				Utils.getFormatted(y),
+				Utils.getFormatted(pressure),
+				this.clickedWidget,
+				"" + this.deviceOrientation
+		};
+	}
+
+	public SingleFingerEventData(long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, String eventCaptured, float x, float y, float pressure, String clickedWidget, int deviceOrientation) {
 		this.timeEvent = timeEvent;
 		this.relativeToStartTimeEvent = relativeToStartTimeEvent;
 		this.activityId = activityId;
@@ -25,21 +42,6 @@ public class SingleFingerEventData implements Parcelable {
 		this.pressure = pressure;
 		this.clickedWidget = clickedWidget;
 		this.deviceOrientation = deviceOrientation;
-	}
-
-	public String[] toStringArray() {
-		return new String[]{
-				this.activityId,
-				this.fragmentId,
-				this.eventCaptured,
-				"" + this.timeEvent,
-				"" + this.relativeToStartTimeEvent,
-				this.x,
-				this.y,
-				this.pressure,
-				this.clickedWidget,
-				"" + this.deviceOrientation
-		};
 	}
 
 	@Override
@@ -54,9 +56,9 @@ public class SingleFingerEventData implements Parcelable {
 		dest.writeString(this.activityId);
 		dest.writeString(this.fragmentId);
 		dest.writeString(this.eventCaptured);
-		dest.writeString(this.x);
-		dest.writeString(this.y);
-		dest.writeString(this.pressure);
+		dest.writeFloat(this.x);
+		dest.writeFloat(this.y);
+		dest.writeFloat(this.pressure);
 		dest.writeString(this.clickedWidget);
 		dest.writeInt(this.deviceOrientation);
 	}
@@ -67,9 +69,9 @@ public class SingleFingerEventData implements Parcelable {
 		this.activityId = in.readString();
 		this.fragmentId = in.readString();
 		this.eventCaptured = in.readString();
-		this.x = in.readString();
-		this.y = in.readString();
-		this.pressure = in.readString();
+		this.x = in.readFloat();
+		this.y = in.readFloat();
+		this.pressure = in.readFloat();
 		this.clickedWidget = in.readString();
 		this.deviceOrientation = in.readInt();
 	}

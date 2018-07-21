@@ -1,5 +1,6 @@
 package it.unisa.tirocinio.gazzaladra.activity;
 
+import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -120,6 +121,7 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		if (savedInstanceState != null) {
 			startActivityTime = savedInstanceState.getLong("startActivityTime");
@@ -129,6 +131,9 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			singleFingerEventDataCollected = savedInstanceState.getParcelableArrayList("singleFingerEventDataCollected");
 			keyPressDataCollected = savedInstanceState.getParcelableArrayList("keyPressDataCollected");
 			moveEventDataCollected = savedInstanceState.getParcelableArrayList("moveEventDataCollected");
+			sessionFolder = savedInstanceState.getString("sessionFolder");
+			activityId = savedInstanceState.getString("activityId");
+			fragmentId = savedInstanceState.getString("fragmentId");
 		} else {
 			startActivityTime = System.currentTimeMillis();
 			sensorDataCollected = new ArrayList<>();
@@ -182,6 +187,9 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
 		outState.putParcelableArrayList("keyPressDataCollected", keyPressDataCollected);
 		outState.putParcelableArrayList("moveEventDataCollected", moveEventDataCollected);
+		outState.putString("sessionFolder", sessionFolder);
+		outState.putString("activityId", activityId);
+		outState.putString("fragmentId", fragmentId);
 	}
 
 	@Override
@@ -200,9 +208,6 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 			default:
 				return;
 		}
-		String x = "" + event.values[0];
-		String y = "" + event.values[1];
-		String z = "" + event.values[2];
 
 		SensorData sd = new SensorData(
 				fileName,
@@ -210,7 +215,9 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				Utils.getTimeRelativeTo(startActivityTime),
 				getActivityId(),
 				getFragmentId(),
-				x, y, z,
+				event.values[0],
+				event.values[1],
+				event.values[2],
 				Utils.getOrientation(this)
 		);
 		sensorDataCollected.add(sd);
@@ -249,14 +256,14 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		}
 
 		RawTouchData rtd = new RawTouchData(
-				millisecTouchEventStart,
 				millisecOffset,
+				millisecTouchEventStart,
 				this.getActivityId(),
 				this.getFragmentId(),
-				"" + event.getX(),
-				"" + event.getY(),
-				"" + event.getPressure(),
-				"" + event.getSize(),
+				event.getX(),
+				event.getY(),
+				event.getPressure(),
+				event.getSize(),
 				"" + actionId,
 				getWidgetIfAny(),
 				Utils.getOrientation(this)
@@ -302,9 +309,9 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				this.getActivityId(),
 				this.getFragmentId(),
 				event,
-				"" + e.getX(),
-				"" + e.getY(),
-				"" + e.getPressure(),
+				e.getX(),
+				e.getY(),
+				e.getPressure(),
 				getWidgetIfAny(),
 				Utils.getOrientation(this)
 		);
@@ -334,17 +341,17 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				millisecOffset,
 				this.getActivityId(),
 				this.getFragmentId(),
-				"" + scaleDetector.getTimeDelta(),
-				"" + scaleDetector.getScaleFactor(),
-				"" + scaleDetector.getCurrentSpanX(),
-				"" + scaleDetector.getCurrentSpanY(),
-				"" + scaleDetector.getCurrentSpan(),
-				"" + scaleDetector.getEventTime(),
-				"" + scaleDetector.getFocusX(),
-				"" + scaleDetector.getFocusY(),
-				"" + scaleDetector.getPreviousSpan(),
-				"" + scaleDetector.getPreviousSpanX(),
-				"" + scaleDetector.getPreviousSpanY()
+				scaleDetector.getTimeDelta(),
+				scaleDetector.getScaleFactor(),
+				scaleDetector.getCurrentSpanX(),
+				scaleDetector.getCurrentSpanY(),
+				scaleDetector.getCurrentSpan(),
+				scaleDetector.getEventTime(),
+				scaleDetector.getFocusX(),
+				scaleDetector.getFocusY(),
+				scaleDetector.getPreviousSpan(),
+				scaleDetector.getPreviousSpanX(),
+				scaleDetector.getPreviousSpanY()
 		);
 
 		scaleEventDataCollected.add(scaleEventData);
@@ -368,11 +375,11 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 				this.getActivityId(),
 				this.getFragmentId(),
 				event,
-				"" + e.getX(),
-				"" + e.getY(),
-				"" + distX,
-				"" + distY,
-				"" + e.getPressure(),
+				e.getX(),
+				e.getY(),
+				distX,
+				distY,
+				e.getPressure(),
 				getWidgetIfAny(),
 				Utils.getOrientation(this)
 		);

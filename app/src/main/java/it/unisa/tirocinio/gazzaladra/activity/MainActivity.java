@@ -4,6 +4,7 @@ import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 		warning = findViewById(R.id.warning);
 
 		if (savedInstanceState != null) {
@@ -88,15 +91,17 @@ public class MainActivity extends AppCompatActivity {
 
 		final UserListAdapter adapter = new UserListAdapter(this);
 		uvm = ViewModelProviders.of(this).get(UserViewModel.class);
+		rv.setAdapter(adapter);
+
 		uvm.getAllUsers().observe(this, new Observer<List<User>>() {
 			@Override
 			public void onChanged(@Nullable List<User> users) {
 
 				//Questo if serve per far apparire la scritta solo la prima volta
-				if (firstDraw && users.size() == 0) {
+				if (users.size() == 0) {
 					rv.setLayoutManager(null);
 					warning.setVisibility(View.VISIBLE);
-				} else if (firstDraw && users.size() != 0) {
+				} else if (users.size() != 0) {
 					rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
 					warning.setVisibility(View.GONE);
 					firstDraw = false;
@@ -106,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		rv.setAdapter(adapter);
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

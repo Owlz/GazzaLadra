@@ -177,7 +177,10 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				long val = uvm.insert(session);
 				session.setUidSession(val);
 
-				for (SensorData sd : QuizActivity.super.getSensorDataCollected()) {
+
+				ArrayList<SensorData> data = new ArrayList<>(QuizActivity.super.getSensorDataCollected());
+
+				for (SensorData sd : data) {
 					AsyncFileWriter.write(sd.toStringArray(), QuizActivity.super.getSessionFolder(), sd.sensorName);
 				}
 

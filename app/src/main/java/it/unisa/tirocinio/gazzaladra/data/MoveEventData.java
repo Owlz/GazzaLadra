@@ -3,19 +3,21 @@ package it.unisa.tirocinio.gazzaladra.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import it.unisa.tirocinio.gazzaladra.Utils;
+
 public class MoveEventData implements Parcelable {
 	public long timeEvent;
 	public long relativeToStartTimeEvent;
 	public String activityId;
 	public String fragmentId;
 	public String eventCaptured;
-	public String x, y;
-	public String distX, distY;
-	public String pressure;
+	public float x, y;
+	public float distX, distY;
+	public float pressure;
 	public String clickedWidget;
 	public int deviceOrientation;
 
-	public MoveEventData(long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, String eventCaptured, String x, String y, String distX, String distY, String pressure, String clickedWidget, int deviceOrientation) {
+	public MoveEventData(long timeEvent, long relativeToStartTimeEvent, String activityId, String fragmentId, String eventCaptured, float x, float y, float distX, float distY, float pressure, String clickedWidget, int deviceOrientation) {
 		this.timeEvent = timeEvent;
 		this.relativeToStartTimeEvent = relativeToStartTimeEvent;
 		this.activityId = activityId;
@@ -32,16 +34,16 @@ public class MoveEventData implements Parcelable {
 
 	public String[] toStringArray() {
 		return new String[]{
-				"" + this.timeEvent,
-				"" + this.relativeToStartTimeEvent,
 				this.activityId,
 				this.fragmentId,
+				"" + this.timeEvent,
+				"" + this.relativeToStartTimeEvent,
 				this.eventCaptured,
-				this.x,
-				this.y,
-				this.distX,
-				this.distY,
-				this.pressure,
+				Utils.getFormatted(this.x),
+				Utils.getFormatted(this.y),
+				Utils.getFormatted(this.distX),
+				Utils.getFormatted(this.distY),
+				Utils.getFormatted(this.pressure),
 				this.clickedWidget,
 				"" + this.deviceOrientation
 		};
@@ -59,11 +61,11 @@ public class MoveEventData implements Parcelable {
 		dest.writeString(this.activityId);
 		dest.writeString(this.fragmentId);
 		dest.writeString(this.eventCaptured);
-		dest.writeString(this.x);
-		dest.writeString(this.y);
-		dest.writeString(this.distX);
-		dest.writeString(this.distY);
-		dest.writeString(this.pressure);
+		dest.writeFloat(this.x);
+		dest.writeFloat(this.y);
+		dest.writeFloat(this.distX);
+		dest.writeFloat(this.distY);
+		dest.writeFloat(this.pressure);
 		dest.writeString(this.clickedWidget);
 		dest.writeInt(this.deviceOrientation);
 	}
@@ -74,11 +76,11 @@ public class MoveEventData implements Parcelable {
 		this.activityId = in.readString();
 		this.fragmentId = in.readString();
 		this.eventCaptured = in.readString();
-		this.x = in.readString();
-		this.y = in.readString();
-		this.distX = in.readString();
-		this.distY = in.readString();
-		this.pressure = in.readString();
+		this.x = in.readFloat();
+		this.y = in.readFloat();
+		this.distX = in.readFloat();
+		this.distY = in.readFloat();
+		this.pressure = in.readFloat();
 		this.clickedWidget = in.readString();
 		this.deviceOrientation = in.readInt();
 	}

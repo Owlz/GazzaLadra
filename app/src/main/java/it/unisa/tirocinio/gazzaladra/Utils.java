@@ -6,10 +6,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Utils {
+	private final static DecimalFormat df;
+
+	static {
+		df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+		df.setMaximumFractionDigits(15);
+	}
+
+	public static String getFormatted(Float f) {
+		return df.format(f);
+	}
+
 	public static long getTimeRelativeTo(long time) {
 		return Math.abs(time - System.currentTimeMillis());
 	}
