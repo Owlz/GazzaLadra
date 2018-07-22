@@ -20,7 +20,7 @@ public interface UserDAO {
 	long insert(Topic t);
 
 	@Query("DELETE FROM users WHERE uidUser = :id")
-	void deleteUser(int id);
+	void deleteUser(long id);
 
 	@Query("SELECT * FROM users ORDER BY uidUser ASC")
 	LiveData<List<User>> getAllUsers();

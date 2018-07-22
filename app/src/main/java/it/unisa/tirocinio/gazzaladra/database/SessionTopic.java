@@ -11,12 +11,4 @@ public class SessionTopic {
 
 	@Relation(parentColumn = "uidSession", entityColumn = "uidS", entity = Topic.class)
 	public List<Topic> topicList;
-
-	@Override
-	public String toString() {
-		return "SessionTopic{" +
-				"session=" + session +
-				", topicList=" + topicList +
-				'}';
-	}
 }

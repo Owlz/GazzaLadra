@@ -45,6 +45,10 @@ public class UserRepository {
 		new InsertTopicAsyncTask().execute(t);
 	}
 
+	public void removeUser(User u) {
+		new RemoveUserAsyncTask().execute(u);
+	}
+
 	private class InsertSessionAsyncTask extends AsyncTask<Session, Void, Long> {
 		@Override
 		protected Long doInBackground(Session... s) {
@@ -63,6 +67,14 @@ public class UserRepository {
 		@Override
 		protected Long doInBackground(Topic... t) {
 			return userDAO.insert(t[0]);
+		}
+	}
+
+	private class RemoveUserAsyncTask extends AsyncTask<User, Void, Void> {
+		@Override
+		protected Void doInBackground(User... u) {
+			userDAO.deleteUser(u[0].getUidUser());
+			return null;
 		}
 	}
 
