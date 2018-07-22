@@ -1,4 +1,4 @@
-package it.unisa.tirocinio.gazzaladra.activity.fragment;
+package it.unisa.tirocinio.gazzaladra.activity.fragment.quiz;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -21,6 +21,8 @@ import java.util.TimerTask;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
+import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
+import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 

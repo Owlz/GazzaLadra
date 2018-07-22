@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import it.unisa.tirocinio.gazzaladra.activity.fragment.Quiz2Fragment;
+import it.unisa.tirocinio.gazzaladra.activity.fragment.quiz.Quiz2Fragment;
 
 public class QuizMaker {
 	public static final List<String> quizList;
@@ -35,7 +35,7 @@ public class QuizMaker {
 	}
 
 	public static Pair<List<String>, List<String>> getQuizList(int numberOfQuizes) {
-		if (numberOfQuizes > quizList.size() /*|| numberOfQuizes > scenariList.size()*/)
+		if (numberOfQuizes > quizList.size())
 			throw new RuntimeException("Numero di quiz richiesto maggiore dei quiz possibili (richiesti: " + numberOfQuizes + ")");
 
 		List<String> scenari = new ArrayList<>();

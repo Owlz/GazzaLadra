@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewConfiguration;
 import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
@@ -60,6 +61,8 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	private boolean isQuitting;
 
 	private CameraView camera;
+
+	private final static int doubleTapTimeout = ViewConfiguration.getDoubleTapTimeout();
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -299,7 +302,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 		else {
 			long actualPress = System.currentTimeMillis();
 
-			if ((actualPress - lastBackPressed) > 500) {
+			if ((actualPress - lastBackPressed) > doubleTapTimeout) {
 				if (!showToast) {
 					Toast.makeText(this, "Premi due volte \"indietro\" per annullare la sessione", Toast.LENGTH_SHORT).show();
 					showToast = true;
