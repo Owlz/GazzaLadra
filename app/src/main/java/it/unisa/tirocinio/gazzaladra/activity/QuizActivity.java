@@ -11,6 +11,13 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.SessionType;
+import com.otaliastudios.cameraview.VideoQuality;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +39,7 @@ import it.unisa.tirocinio.gazzaladra.database.Session;
 import it.unisa.tirocinio.gazzaladra.database.Topic;
 import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
 import it.unisa.tirocinio.gazzaladra.file_writer.AsyncFileWriter;
+import it.unisa.tirocinio.gazzaladra.file_writer.VideoRecorder;
 
 public class QuizActivity extends TemplateActivity implements IntermediateFragment.IntermediateFragmentCallback, FragmentComunicator, RiepologFragment.RiepilogoFragmentCallback, ErrorFragment.ErrorFragmentCallback {
 	private FragmentManager fm;
@@ -50,6 +58,8 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	private long lastBackPressed;
 	private boolean showToast;
 	private boolean isQuitting;
+
+	private CameraView camera;
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -74,10 +84,22 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 
 		super.setActivityId("QuizActivity");
 
-
 		Intent i = getIntent();
 		session = i.getParcelableExtra("session");
 		super.setSessionFolder(session);
+
+		camera = findViewById(R.id.camera);
+		camera.setSessionType(SessionType.VIDEO);
+		camera.setFacing(Facing.FRONT);
+		camera.setVideoQuality(VideoQuality.HIGHEST);
+		camera.addCameraListener(new CameraListener() {
+			@Override
+			public void onVideoTaken(File video) {
+				if (isQuitting) {
+					video.delete();
+				}
+			}
+		});
 
 		fm = getSupportFragmentManager();
 
@@ -131,7 +153,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				.commit();
 		super.setFragmentId(frag.getFragmentId());
 
-
+		camera.startCapturingVideo(VideoRecorder.getNewFile(getSessionFolder(), "topic_" + fragmentIndex));
 	}
 
 	@Override
@@ -139,6 +161,9 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 		fragmentDataNew.setScenario(currScenario);
 		fragmentResultData.add(fragmentDataNew);
 
+		if (camera.isCapturingVideo()) {
+			camera.stopCapturingVideo();
+		}
 		//next activity
 		if (fragmentIndex < fragments.size()) {
 			currScenario = scenari.get(fragmentIndex);
@@ -207,6 +232,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				for (FragmentData r : fragmentResultData) {
 					AsyncFileWriter.write(new String[]{
 							r.getIdFragment(),
+							"" + fragmentIndex,
 							"" + r.getTimeStart(),
 							"" + r.getTimeEnd(),
 							r.getRispostaData(),
@@ -260,6 +286,9 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 
 	@Override
 	public void ritorna() {
+		if (camera.isCapturingVideo()) {
+			camera.stopCapturingVideo();
+		}
 		super.onBackPressed();
 	}
 
@@ -278,6 +307,9 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				lastBackPressed = System.currentTimeMillis();
 			} else {
 				isQuitting = true;
+				if (camera.isCapturingVideo()) {
+					camera.stopCapturingVideo();
+				}
 				super.onBackPressed();
 			}
 		}
@@ -287,12 +319,12 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 	protected void onPause() {
 		super.onPause();
 
-
 		if (!isQuitting) {
 			Fragment f = fm.findFragmentById(R.id.fragmentContainer);
 			if (f instanceof RiepologFragment)
 				return;
 
+			isQuitting = true;
 			FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
 					getApplicationContext(),
 					ErrorFragment.class.getName()
@@ -302,6 +334,22 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 					.commit();
 
 			QuizActivity.super.setFragmentId(frag.getFragmentId());
+
+			if (camera.isCapturingVideo()) {
+				camera.stopCapturingVideo();
+			}
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		camera.start();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		camera.destroy();
 	}
 }

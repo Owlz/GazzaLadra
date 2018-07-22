@@ -32,15 +32,8 @@ public class MainActivity extends AppCompatActivity {
 	private RecyclerView rv;
 	private UserViewModel uvm;
 	private TextView warning;
-	private boolean firstDraw;
 
 	private final static int PERMISSION_REQUEST_CODE = 0;
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putBoolean("firstDraw", firstDraw);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +42,6 @@ public class MainActivity extends AppCompatActivity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		warning = findViewById(R.id.warning);
-
-		if (savedInstanceState != null) {
-			firstDraw = savedInstanceState.getBoolean("firstDraw");
-		} else {
-			firstDraw = true;
-		}
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -68,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 				startActivityForResult(intent, 1);
 			}
 		});
-
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			List<String> permissions = new ArrayList<>();
@@ -104,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 				} else {
 					rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
 					warning.setVisibility(View.GONE);
-					firstDraw = false;
 				}
 
 				adapter.setUsers(users);
