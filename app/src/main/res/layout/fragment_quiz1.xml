@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="#000"
+		android:layout_centerHorizontal="true"
+		android:layout_above="@id/progressBar"
+		android:text="Scrivi il colore della parola"
+		android:layout_marginBottom="25dp"
+		android:textStyle="bold|italic"/>
+
+	<ProgressBar
+		android:id="@+id/progressBar"
+		style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+		android:layout_width="369dp"
+		android:layout_height="26dp"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="57dp"
+		android:layout_marginLeft="8dp"
+		android:max="1000"
+		android:progressDrawable="@drawable/progress_bar"/>
+
+	<TextView
+		android:id="@+id/countdown"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="92dp"
+		android:layout_marginLeft="10dp"
+		android:text="placeholder"
+		android:textColor="#000"/>
+
+	<TextView
+		android:id="@+id/colorText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="179dp"
+		android:textSize="36dp"/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true">
+
+		<com.rengwuxian.materialedittext.MaterialEditText
+			android:id="@+id/edit"
+			android:layout_width="200dp"
+			android:layout_height="wrap_content"
+			android:layout_alignBaseline="@+id/buttonConferma"
+			android:layout_alignParentStart="true"
+			android:layout_marginStart="52dp"
+			android:background="#FFFFFF"
+			android:hint="Colore"
+			android:textSize="30dp"
+			app:met_floatingLabel="normal"
+			android:layout_margin="20dp"/>
+
+		<Button
+			android:layout_margin="20dp"
+			android:layout_gravity="center"
+			android:id="@+id/buttonConferma"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Conferma"/>
+	</LinearLayout>
+
+
+</RelativeLayout>

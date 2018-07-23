@@ -91,6 +91,7 @@ public class SessionActivity extends AppCompatActivity {
 		final ExpandableListAdapter adapter = new ExpandableListAdapter(this, sessioniUtente, sessionCollector);
 		expListView.setAdapter(adapter);
 
+
 		uvm = ViewModelProviders.of(this).get(UserViewModel.class);
 		uvm.getCompleteSessionByUser(user.getUidUser()).observe(this, new Observer<List<SessionTopic>>() {
 			@Override

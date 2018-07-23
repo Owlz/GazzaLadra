@@ -172,8 +172,6 @@ public class Quiz2Fragment extends FragmentTemplate implements View.OnClickListe
 				new FragmentData(
 						super.getFragmentId(),
 						null,
-						String.valueOf(!isTimeExpired),
-						String.valueOf(!isTimeExpired),
 						!isTimeExpired,
 						timeStart,
 						System.currentTimeMillis()

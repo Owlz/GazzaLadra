@@ -123,7 +123,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 			showToast = false;
 			isQuitting = false;
 
-			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(1);
+			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(2);
 			fragments = p.first;
 			scenari = p.second;
 
@@ -234,17 +234,16 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 
 				for (FragmentData r : fragmentResultData) {
 					AsyncFileWriter.write(new String[]{
-							r.getIdFragment(),
+							r.idFragment,
 							"" + fragmentIndex,
-							"" + r.getTimeStart(),
-							"" + r.getTimeEnd(),
-							r.getRispostaData(),
-							r.getRispostaCorretta(),
+							"" + r.timeStart,
+							"" + r.timeEnd,
+							"" + r.isComplete,
 							"" + session.getUidU(),
-							r.getScenario()
+							r.scenario
 					}, QuizActivity.super.getSessionFolder(), "topic");
 
-					uvm.insert(new Topic(session.getUidSession(), r.getIdFragment(), r.isComplete()));
+					uvm.insert(new Topic(session.getUidSession(), r.idFragment, r.isComplete));
 				}
 
 				AsyncFileWriter.write(new String[]{
