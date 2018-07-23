@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:id="@+id/testoComprensione"
+		android:layout_width="match_parent"
+		android:layout_height="162dp"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginBottom="8dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:scrollbars="vertical"
+		android:textColor="#000000"
+		android:textSize="22dp"/>
+
+	<ProgressBar
+		android:id="@+id/progressBar"
+		style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+		android:layout_width="369dp"
+		android:layout_height="26dp"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="193dp"
+		android:max="1000"
+		android:progressDrawable="@drawable/progress_bar"/>
+
+	<TextView
+		android:id="@+id/countdown"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_alignStart="@+id/testoComprensione"
+		android:layout_marginTop="228dp"
+		android:text="placeholder"
+		android:textColor="#000"/>
+
+	<EditText
+		android:id="@+id/editText"
+		android:layout_width="match_parent"
+		android:layout_height="89dp"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginBottom="185dp"
+		android:background="#FFFFFF"/>
+
+	<Button
+		android:id="@+id/buttonConferma"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginBottom="28dp"
+		android:text="Conferma"/>
+</RelativeLayout>

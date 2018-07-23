@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<LinearLayout
+		android:id="@+id/linearL"
+		android:layout_width="wrap_content"
+		android:layout_height="178dp"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/parole"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+
+			android:textSize="20dp"/>
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+			android:layout_width="369dp"
+			android:layout_height="26dp"
+			android:layout_above="@+id/countdown"
+			android:layout_marginLeft="5dp"
+			android:layout_marginTop="55dp"
+			android:max="1000"
+			android:progressDrawable="@drawable/progress_bar"/>
+
+		<TextView
+			android:id="@+id/countdown"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="5dp"
+			android:layout_marginTop="20dp"
+			android:text="placeholder"
+			android:textColor="#000"/>
+
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="315dp"
+		android:layout_below="@id/linearL">
+
+		<ScrollView
+			android:id="@+id/scroll"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_alignParentStart="true"
+			android:layout_below="@+id/linearL">
+
+			<LinearLayout
+				android:id="@+id/linearLayout"
+				android:layout_width="match_parent"
+				android:layout_height="347dp"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentTop="true"
+				android:layout_marginTop="149dp"
+				android:orientation="vertical">
+
+			</LinearLayout>
+		</ScrollView>
+	</LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="50dp"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginBottom="11dp">
+
+		<Button
+			android:id="@+id/buttonConferma"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			android:text="Conferma"/>
+	</RelativeLayout>
+
+
+</RelativeLayout>

@@ -123,7 +123,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 			showToast = false;
 			isQuitting = false;
 
-			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(2);
+			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(1);
 			fragments = p.first;
 			scenari = p.second;
 
