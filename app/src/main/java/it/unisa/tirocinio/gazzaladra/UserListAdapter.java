@@ -20,6 +20,7 @@ import java.util.List;
 
 import it.unisa.tirocinio.gazzaladra.activity.SessionActivity;
 import it.unisa.tirocinio.gazzaladra.database.User;
+import it.unisa.tirocinio.gazzaladra.database.UserViewModel;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserViewHolder> {
 
@@ -53,6 +54,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 							.setMessage("Vuoi cancellare l'utente " + user.getName() + " " + user.getLastName() + "?")
 							.setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
+									userViewModel.deleteUser(user);
 									Toast.makeText(context, "Puff ded", Toast.LENGTH_SHORT).show();
 									dialog.dismiss();
 								}
@@ -72,9 +74,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 	private final LayoutInflater inflater;
 	private List<User> users;
 	private Context context;
+	private UserViewModel userViewModel;
 
-	public UserListAdapter(Context c) {
+	public UserListAdapter(Context c, UserViewModel uvm) {
 		inflater = LayoutInflater.from(c);
+		this.userViewModel = uvm;
 		this.context = c;
 
 	}

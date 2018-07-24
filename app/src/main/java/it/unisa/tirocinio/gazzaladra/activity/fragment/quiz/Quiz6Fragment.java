@@ -179,11 +179,15 @@ public class Quiz6Fragment extends FragmentTemplate {
 		next.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				timer.cancel();
+
 				boolean hasMatch = false;
-				for (String risp : domandaScelta.getRisposte()) {
-					if (risp.equalsIgnoreCase(edit.getText().toString())) {
-						hasMatch = true;
-						break;
+				if (!isTimeExpired) {
+					for (String risp : domandaScelta.getRisposte()) {
+						if (risp.equalsIgnoreCase(edit.getText().toString())) {
+							hasMatch = true;
+							break;
+						}
 					}
 				}
 				if (hasMatch) {

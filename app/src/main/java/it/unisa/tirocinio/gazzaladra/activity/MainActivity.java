@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
 		rv = findViewById(R.id.recycler_view);
 
-		final UserListAdapter adapter = new UserListAdapter(this);
 		uvm = ViewModelProviders.of(this).get(UserViewModel.class);
+		final UserListAdapter adapter = new UserListAdapter(this, uvm);
 		rv.setAdapter(adapter);
 
 		uvm.getAllUsers().observe(this, new Observer<List<User>>() {

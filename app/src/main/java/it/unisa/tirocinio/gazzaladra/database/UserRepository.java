@@ -9,7 +9,6 @@ import java.util.List;
 public class UserRepository {
 	UserDAO userDAO;
 	LiveData<List<User>> userList;
-	LiveData<List<SessionTopic>> lastSessionTopic;
 
 	public UserRepository(Application app) {
 		UserDB db = UserDB.getDatabase(app);

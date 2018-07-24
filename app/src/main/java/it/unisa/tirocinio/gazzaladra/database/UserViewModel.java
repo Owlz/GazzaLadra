@@ -45,4 +45,8 @@ public class UserViewModel extends AndroidViewModel {
 	public LiveData<List<SessionTopic>> getCompleteSessionByUser(long id) {
 		return repo.getLastSessionTopic(id);
 	}
+
+	public void deleteUser(User u) {
+		repo.removeUser(u);
+	}
 }
