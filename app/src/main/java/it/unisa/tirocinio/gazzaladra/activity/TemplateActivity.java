@@ -322,9 +322,10 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 
 	@Override
 	public void fireKeyPress(int keyCode, int position) {
+		long time = System.currentTimeMillis();
 		KeyPressData kpd = new KeyPressData(
-				millisecOffset,
-				millisecTouchEventStart,
+				time,
+				Utils.getTimeRelativeTo(startActivityTime),
 				this.getActivityId(),
 				this.getFragmentId(),
 				"" + keyCode,

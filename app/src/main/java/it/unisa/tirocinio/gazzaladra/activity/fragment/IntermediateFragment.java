@@ -61,15 +61,6 @@ public class IntermediateFragment extends FragmentTemplate {
 		}
 
 		//todo: decidere se tutti i fragment generano click o solo i "topic"
-//		for (View child : Utils.getAllChildrenBFS(v)) {
-//			child.setOnTouchListener(new View.OnTouchListener() {
-//				@Override
-//				public boolean onTouch(View view, MotionEvent event) {
-//					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
-//				}
-//			});
-//		}
-
 		return v;
 	}
 

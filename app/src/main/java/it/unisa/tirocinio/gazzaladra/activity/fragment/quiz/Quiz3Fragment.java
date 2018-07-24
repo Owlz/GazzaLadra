@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -17,7 +18,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.unisa.tirocinio.gazzaladra.R;
+import it.unisa.tirocinio.gazzaladra.Utils;
 import it.unisa.tirocinio.gazzaladra.activity.AdapterRecyclerView;
+import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
 
@@ -83,6 +86,15 @@ public class Quiz3Fragment extends FragmentTemplate {
 		rv.setLayoutManager(mLayoutManager);
 		adapter = new AdapterRecyclerView(sinonimi, mListener, super.getFragmentId(), startTime);
 		rv.setAdapter(adapter);
+
+		for (View child : Utils.getAllChildrenBFS(v)) {
+			child.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View view, MotionEvent event) {
+					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
+				}
+			});
+		}
 		return v;
 	}
 

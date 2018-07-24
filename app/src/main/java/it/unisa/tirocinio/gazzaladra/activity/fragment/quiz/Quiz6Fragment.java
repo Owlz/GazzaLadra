@@ -22,8 +22,11 @@ import java.util.TimerTask;
 
 import it.unisa.tirocinio.gazzaladra.DomandeImg;
 import it.unisa.tirocinio.gazzaladra.R;
+import it.unisa.tirocinio.gazzaladra.Utils;
+import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
+import it.unisa.tirocinio.gazzaladra.callbacks.CustomTextWatcher;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 public class Quiz6Fragment extends FragmentTemplate {
@@ -120,52 +123,6 @@ public class Quiz6Fragment extends FragmentTemplate {
 
 		iv = v.findViewById(R.id.imageView);
 		iv.setScaleType(ImageView.ScaleType.MATRIX);
-		iv.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				ImageView view = (ImageView) v;
-
-				// Handle touch events here...
-				switch (event.getAction() & MotionEvent.ACTION_MASK) {
-					case MotionEvent.ACTION_DOWN:
-						savedMatrix.set(matrix);
-						start.set(event.getX(), event.getY());
-						mode = DRAG;
-						break;
-					case MotionEvent.ACTION_POINTER_DOWN:
-						oldDist = spacing(event);
-						if (oldDist > 10f) {
-							savedMatrix.set(matrix);
-							midPoint(mid, event);
-							mode = ZOOM;
-						}
-						break;
-					case MotionEvent.ACTION_UP:
-					case MotionEvent.ACTION_POINTER_UP:
-						mode = NONE;
-						break;
-					case MotionEvent.ACTION_MOVE:
-						if (mode == DRAG) {
-							// ...
-							matrix.set(savedMatrix);
-							matrix.postTranslate(event.getX() - start.x, event.getY()
-									- start.y);
-						} else if (mode == ZOOM) {
-							float newDist = spacing(event);
-							if (newDist > 10f) {
-								matrix.set(savedMatrix);
-								float scale = newDist / oldDist;
-								matrix.postScale(scale, scale, mid.x, mid.y);
-							}
-						}
-						break;
-				}
-
-				view.setImageMatrix(matrix);
-				return true;
-			}
-
-		});
 
 		next = v.findViewById(R.id.next);
 		edit = v.findViewById(R.id.edit);
@@ -200,6 +157,64 @@ public class Quiz6Fragment extends FragmentTemplate {
 			}
 		});
 
+		edit.addTextChangedListener(new CustomTextWatcher((TemplateActivity) getActivity()));
+		for (View child : Utils.getAllChildrenBFS(v)) {
+			if (child instanceof ImageView) {
+				child.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						ImageView view = (ImageView) v;
+
+						// Handle touch events here...
+						switch (event.getAction() & MotionEvent.ACTION_MASK) {
+							case MotionEvent.ACTION_DOWN:
+								savedMatrix.set(matrix);
+								start.set(event.getX(), event.getY());
+								mode = DRAG;
+								break;
+							case MotionEvent.ACTION_POINTER_DOWN:
+								oldDist = spacing(event);
+								if (oldDist > 10f) {
+									savedMatrix.set(matrix);
+									midPoint(mid, event);
+									mode = ZOOM;
+								}
+								break;
+							case MotionEvent.ACTION_UP:
+							case MotionEvent.ACTION_POINTER_UP:
+								mode = NONE;
+								break;
+							case MotionEvent.ACTION_MOVE:
+								if (mode == DRAG) {
+									// ...
+									matrix.set(savedMatrix);
+									matrix.postTranslate(event.getX() - start.x, event.getY()
+											- start.y);
+								} else if (mode == ZOOM) {
+									float newDist = spacing(event);
+									if (newDist > 10f) {
+										matrix.set(savedMatrix);
+										float scale = newDist / oldDist;
+										matrix.postScale(scale, scale, mid.x, mid.y);
+									}
+								}
+								break;
+						}
+
+						view.setImageMatrix(matrix);
+						((TemplateActivity) getActivity()).widgetTouchDispatcher(v, event);
+						return true;
+					}
+				});
+			} else {
+				child.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						return ((TemplateActivity) getActivity()).widgetTouchDispatcher(v, event);
+					}
+				});
+			}
+		}
 		timeStart = System.currentTimeMillis();
 		return v;
 	}

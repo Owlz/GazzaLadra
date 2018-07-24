@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,8 +20,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.unisa.tirocinio.gazzaladra.R;
+import it.unisa.tirocinio.gazzaladra.Utils;
+import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
+import it.unisa.tirocinio.gazzaladra.callbacks.CustomTextWatcher;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 public class Quiz5Fragment extends FragmentTemplate {
@@ -101,6 +105,7 @@ public class Quiz5Fragment extends FragmentTemplate {
 			//et[i].setLayoutParams(params);
 			ll.addView(tv[i]);
 			ll.addView(et[i]);
+			et[i].addTextChangedListener(new CustomTextWatcher((TemplateActivity) getActivity()));
 		}
 		tv[frasi.length - 1] = new TextView(getContext().getApplicationContext());
 		tv[frasi.length - 1].setText(frasi[frasi.length - 1]);
@@ -135,6 +140,14 @@ public class Quiz5Fragment extends FragmentTemplate {
 		progressBar.setMax(REQUEST_TIMER);
 		timer.scheduleAtFixedRate(task, 500, 1000);
 
+		for (View child : Utils.getAllChildrenBFS(v)) {
+			child.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View view, MotionEvent event) {
+					return ((TemplateActivity) getActivity()).widgetTouchDispatcher(view, event);
+				}
+			});
+		}
 		return v;
 	}
 
