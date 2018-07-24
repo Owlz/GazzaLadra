@@ -17,12 +17,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.unisa.tirocinio.gazzaladra.AdapterRecyclerView;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.Utils;
-import it.unisa.tirocinio.gazzaladra.activity.AdapterRecyclerView;
 import it.unisa.tirocinio.gazzaladra.activity.TemplateActivity;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
+import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 public class Quiz3Fragment extends FragmentTemplate {
 	@Override
@@ -109,7 +110,9 @@ public class Quiz3Fragment extends FragmentTemplate {
 					progressBar.setProgress(counter);
 					if (counter >= REQUEST_TIMER) {
 						timer.cancel();
-					}
+                        mListener.onFragmentEnd(new FragmentData(Quiz3Fragment.super.getFragmentId(), null, false, startTime, System.currentTimeMillis()));
+
+                    }
 				}
 			});
 		}

@@ -1,4 +1,4 @@
-package it.unisa.tirocinio.gazzaladra.activity;
+package it.unisa.tirocinio.gazzaladra;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,13 +9,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerView.ViewHolder> {
 
 	public static List<String> sinonymous;
+
+	FragmentComunicator callback;
+	String id;
+	long start;
 
 	class ViewHolder extends RecyclerView.ViewHolder {
 		private TextView world;
@@ -44,9 +47,6 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 		}
 	}
 
-	FragmentComunicator callback;
-	String id;
-	long start;
 
 	public AdapterRecyclerView(List<String> sinonymous, FragmentComunicator mListener, String idFragment, long timeStart) {
 

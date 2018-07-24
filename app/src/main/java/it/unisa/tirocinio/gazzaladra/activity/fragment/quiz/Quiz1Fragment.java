@@ -69,7 +69,7 @@ public class Quiz1Fragment extends FragmentTemplate {
 		handler = new Handler();
 		task = new CustomTimer();
 		wordsColor = new String[]{"Nero", "Grigio", "Rosso", "Giallo", "Verde", "Blu", "Bianco"};
-		colors = new int[]{Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY, Color.WHITE};
+		colors = new int[]{Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY};
 	}
 
 	@Override
@@ -178,12 +178,13 @@ public class Quiz1Fragment extends FragmentTemplate {
 			Toast.makeText(getContext(), "Esatto!", Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(getContext(), "Sbagliato!", Toast.LENGTH_SHORT).show();
+			isCompleted = false;
 		}
 		checkWin();
 	}
 
 	private void checkWin() {
-		if (countColor > numQuizes || !isCompleted) {
+		if (countColor > numQuizes) {
 			timer.cancel();
 			Toast.makeText(getContext(), "hai finito il quiz!", Toast.LENGTH_SHORT).show();
 			mListener.onFragmentEnd(new FragmentData(super.getFragmentId(), null, isCompleted, startTime, System.currentTimeMillis()));

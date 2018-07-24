@@ -123,7 +123,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 			showToast = false;
 			isQuitting = false;
 
-			Pair<List<String>, List<String>> p = QuizMaker.getQuizList(1);
+			Pair<List<String>, List<String>> p = QuizMaker.getQuizList();
 			fragments = p.first;
 			scenari = p.second;
 
@@ -211,7 +211,6 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				for (SensorData sd : data) {
 					AsyncFileWriter.write(sd.toStringArray(), QuizActivity.super.getSessionFolder(), sd.sensorName);
 				}
-
 				for (RawTouchData r : QuizActivity.super.getRawTouchDataCollected()) {
 					AsyncFileWriter.write(r.toStringArray(), QuizActivity.super.getSessionFolder(), "rawTouch");
 				}
@@ -258,9 +257,13 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				runOnUiThread(new Runnable() {
 
 					public void run() {
+
+						Bundle b = new Bundle();
+						b.putParcelableArrayList("fragmentData", fragmentResultData);
 						FragmentTemplate frag = (FragmentTemplate) Fragment.instantiate(
 								getApplicationContext(),
-								RiepologFragment.class.getName()
+								RiepologFragment.class.getName(),
+								b
 						);
 						fm.beginTransaction()
 								.replace(R.id.fragmentContainer, frag)

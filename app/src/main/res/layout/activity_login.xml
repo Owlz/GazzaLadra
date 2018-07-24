@@ -11,7 +11,7 @@
 		android:id="@+id/include"
 		layout="@layout/toolbar_layout"/>
 
-	<EditText
+	<com.rengwuxian.materialedittext.MaterialEditText
 		android:id="@+id/nome"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -20,6 +20,7 @@
 		android:layout_marginStart="8dp"
 		android:layout_marginTop="24dp"
 		android:ems="10"
+		android:hint="Nome"
 		android:inputType="textPersonName"
 		app:layout_constraintBottom_toTopOf="@+id/cognome"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -27,13 +28,14 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/include"/>
 
-	<EditText
+	<com.rengwuxian.materialedittext.MaterialEditText
 		android:id="@+id/cognome"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginEnd="8dp"
 		android:layout_marginStart="8dp"
 		android:ems="10"
+		android:hint="Cognome"
 		android:inputType="textPersonName"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.503"
@@ -97,7 +99,7 @@
 		android:layout_marginEnd="8dp"
 		android:layout_marginStart="8dp"
 		android:layout_marginTop="8dp"
-		android:text="Button"
+		android:text="Scatta foto"
 		app:layout_constraintBottom_toTopOf="@+id/imageView"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

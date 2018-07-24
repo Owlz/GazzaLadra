@@ -39,7 +39,7 @@ public class Quiz4Fragment extends FragmentTemplate {
 	private Button conferma;
 	private ProgressBar progressBar;
 	private TextView tvTimer;
-	private static final int REQUEST_TIMER = 60;
+	private static final int REQUEST_TIMER = 115;
 	private Timer timer;
 	private Handler handler;
 	private int counter;
@@ -78,12 +78,14 @@ public class Quiz4Fragment extends FragmentTemplate {
 		response = v.findViewById(R.id.editText);
 		conferma = v.findViewById(R.id.buttonConferma);
 
+		startTime = System.currentTimeMillis();
 		progressBar = v.findViewById(R.id.progressBar);
 		tvTimer = v.findViewById(R.id.countdown);
-		progressBar.setMax(REQUEST_TIMER);
+		progressBar.setMax((int)REQUEST_TIMER);
 		timer.scheduleAtFixedRate(task, 500, 1000);
 
-		setTesto();
+        setTesto();
+
 		testoCompr.setMovementMethod(new ScrollingMovementMethod());
 
 		conferma.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +142,7 @@ public class Quiz4Fragment extends FragmentTemplate {
 					if (counter >= REQUEST_TIMER) {
 						timer.cancel();
 						isCompleted = false;
+                        mListener.onFragmentEnd(new FragmentData(Quiz4Fragment.super.getFragmentId(), null, isCompleted, startTime, System.currentTimeMillis()));
 					}
 				}
 			});
