@@ -123,26 +123,13 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-		if (savedInstanceState != null) {
-			startActivityTime = savedInstanceState.getLong("startActivityTime");
-			sensorDataCollected = savedInstanceState.getParcelableArrayList("sensorDataCollected");
-			rawTouchDataCollected = savedInstanceState.getParcelableArrayList("rawTouchDataCollected");
-			scaleEventDataCollected = savedInstanceState.getParcelableArrayList("scaleEventDataCollected");
-			singleFingerEventDataCollected = savedInstanceState.getParcelableArrayList("singleFingerEventDataCollected");
-			keyPressDataCollected = savedInstanceState.getParcelableArrayList("keyPressDataCollected");
-			moveEventDataCollected = savedInstanceState.getParcelableArrayList("moveEventDataCollected");
-			sessionFolder = savedInstanceState.getString("sessionFolder");
-			activityId = savedInstanceState.getString("activityId");
-			fragmentId = savedInstanceState.getString("fragmentId");
-		} else {
-			startActivityTime = System.currentTimeMillis();
-			sensorDataCollected = new ArrayList<>();
-			singleFingerEventDataCollected = new ArrayList<>();
-			scaleEventDataCollected = new ArrayList<>();
-			rawTouchDataCollected = new ArrayList<>();
-			keyPressDataCollected = new ArrayList<>();
-			moveEventDataCollected = new ArrayList<>();
-		}
+		startActivityTime = System.currentTimeMillis();
+		sensorDataCollected = new ArrayList<>();
+		singleFingerEventDataCollected = new ArrayList<>();
+		scaleEventDataCollected = new ArrayList<>();
+		rawTouchDataCollected = new ArrayList<>();
+		keyPressDataCollected = new ArrayList<>();
+		moveEventDataCollected = new ArrayList<>();
 
 		gd = new GestureDetector(this, new CustomGestureListener(this));
 		sgd = new ScaleGestureDetector(this, new CustomScaleDetectorListener(this));
@@ -180,16 +167,19 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putLong("startActivityTime", startActivityTime);
-		outState.putParcelableArrayList("sensorDataCollected", sensorDataCollected);
-		outState.putParcelableArrayList("rawTouchDataCollected", rawTouchDataCollected);
-		outState.putParcelableArrayList("singleFingerEventDataCollected", singleFingerEventDataCollected);
-		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
-		outState.putParcelableArrayList("keyPressDataCollected", keyPressDataCollected);
-		outState.putParcelableArrayList("moveEventDataCollected", moveEventDataCollected);
-		outState.putString("sessionFolder", sessionFolder);
-		outState.putString("activityId", activityId);
-		outState.putString("fragmentId", fragmentId);
+		/**
+		 * Non salviamo nulla perchè, per ora, non ne abbiamo bisogno
+		 */
+//		outState.putLong("startActivityTime", startActivityTime);
+//		outState.putParcelableArrayList("sensorDataCollected", sensorDataCollected);
+//		outState.putParcelableArrayList("rawTouchDataCollected", rawTouchDataCollected);
+//		outState.putParcelableArrayList("singleFingerEventDataCollected", singleFingerEventDataCollected);
+//		outState.putParcelableArrayList("scaleEventDataCollected", scaleEventDataCollected);
+//		outState.putParcelableArrayList("keyPressDataCollected", keyPressDataCollected);
+//		outState.putParcelableArrayList("moveEventDataCollected", moveEventDataCollected);
+//		outState.putString("sessionFolder", sessionFolder);
+//		outState.putString("activityId", activityId);
+//		outState.putString("fragmentId", fragmentId);
 	}
 
 	@Override
