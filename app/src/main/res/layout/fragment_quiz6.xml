@@ -2,14 +2,87 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<ImageView
-		android:id="@+id/imageView"
-		android:scaleType="matrix"
-		android:src="@drawable/gatto"
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="250dp"/>
+		android:layout_height="match_parent"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:orientation="vertical">
+
+		<ImageView
+			android:id="@+id/imageView"
+			android:layout_width="match_parent"
+			android:layout_height="200dp"
+			android:scaleType="matrix"
+			android:src="@drawable/img"/>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dp"
+			android:layout_marginTop="10dp">
+
+			<ProgressBar
+				android:id="@+id/progressBar"
+				style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+				android:layout_width="332dp"
+				android:layout_height="26dp"
+				android:layout_centerHorizontal="true"
+				android:max="1000"
+				android:progress="0"
+				android:progressDrawable="@drawable/progress_bar"/>
+
+			<TextView
+				android:id="@+id/countdown_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignStart="@+id/progressBar"
+				android:layout_marginTop="26dp"
+				android:text="placeholder"
+				android:textColor="#000"/>
+		</RelativeLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="10dp"
+			android:text="Domanda:"
+			android:textSize="18sp"
+			android:textStyle="bold|italic"/>
+
+		<TextView
+			android:id="@+id/domanda"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:text="placeholder"
+			android:textSize="20sp"
+			android:textStyle="bold|italic"/>
+
+		<com.rengwuxian.materialedittext.MaterialEditText
+			android:id="@+id/edit"
+			android:layout_width="250dp"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_margin="10dp"
+			android:layout_marginStart="52dp"
+			android:background="#FFFFFF"
+			android:hint="Risposta"
+			android:textSize="24sp"
+			app:met_floatingLabel="normal"/>
+
+		<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Conferma"
+			android:id="@+id/next"
+			android:layout_gravity="center_horizontal"
+			android:textSize="24sp"/>
+	</LinearLayout>
 
 
 </RelativeLayout>

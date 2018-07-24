@@ -7,19 +7,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 
+import it.unisa.tirocinio.gazzaladra.DomandeImg;
 import it.unisa.tirocinio.gazzaladra.R;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentComunicator;
 import it.unisa.tirocinio.gazzaladra.activity.fragment.FragmentTemplate;
+import it.unisa.tirocinio.gazzaladra.data.FragmentData;
 
 public class Quiz6Fragment extends FragmentTemplate {
 	@Override
@@ -30,17 +35,19 @@ public class Quiz6Fragment extends FragmentTemplate {
 	private boolean isTimeExpired;
 	private ProgressBar progressBar;
 	private TextView tvTimer;
-	private static final int REQUEST_TIMER = 10;
+	private static final int REQUEST_TIMER = 15;
 	private Timer timer;
 	private Handler handler;
 	private long timeStart;
-	private Button next;
+	private CustomTimer task;
 
 	private FragmentComunicator mListener;
 
 	private ImageView iv;
+	private Button next;
+	private EditText edit;
+	private TextView domanda;
 
-	private ScaleGestureDetector sgd;
 
 	// These matrices will be used to move and zoom image
 	Matrix matrix = new Matrix();
@@ -56,7 +63,30 @@ public class Quiz6Fragment extends FragmentTemplate {
 	PointF start = new PointF();
 	PointF mid = new PointF();
 	float oldDist = 1f;
-	String savedItemClicked;
+
+	private final static DomandeImg[] domande = new DomandeImg[]{
+			new DomandeImg("Cosa si trova sulla testa del bufalo?",
+					new String[]{
+							"rana",
+							"rospo",
+							"anfibio"
+					}),
+			new DomandeImg("Di che colore sono i robot sotto l'ombrellone bianco e rosso?",
+					new String[]{
+							"argento",
+							"grigio",
+							"metallo"
+					}),
+			new DomandeImg("Quanti dolci sta sollevando il pasticcere?",
+					new String[]{
+							"due",
+							"2",
+							"sei",
+							"6"
+					})
+	};
+	private Random rand;
+	private DomandeImg domandaScelta;
 
 	public Quiz6Fragment() {
 		// Required empty public constructor
@@ -69,9 +99,10 @@ public class Quiz6Fragment extends FragmentTemplate {
 		isTimeExpired = false;
 		timer = new Timer();
 		handler = new Handler();
+		task = new CustomTimer();
 
 		matrix = new Matrix();
-
+		rand = new Random();
 	}
 
 	@Override
@@ -79,13 +110,15 @@ public class Quiz6Fragment extends FragmentTemplate {
 	                         Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_quiz6, container, false);
 
+		progressBar = v.findViewById(R.id.progressBar);
+		tvTimer = v.findViewById(R.id.countdown_tv);
+		tvTimer.setText(30 + "");
+		progressBar.setProgress(0);
+		progressBar.setMax(REQUEST_TIMER);
+		timer.scheduleAtFixedRate(task, 500, 1000);
+		isTimeExpired = false;
+
 		iv = v.findViewById(R.id.imageView);
-		sgd = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-			@Override
-			public boolean onScale(ScaleGestureDetector detector) {
-				return false;
-			}
-		});
 		iv.setScaleType(ImageView.ScaleType.MATRIX);
 		iv.setOnTouchListener(new View.OnTouchListener() {
 			@Override
@@ -134,6 +167,36 @@ public class Quiz6Fragment extends FragmentTemplate {
 
 		});
 
+		next = v.findViewById(R.id.next);
+		edit = v.findViewById(R.id.edit);
+		domanda = v.findViewById(R.id.domanda);
+
+		int numDomanda = rand.nextInt(domande.length);
+		domandaScelta = domande[numDomanda];
+
+		domanda.setText(domandaScelta.getDomanda());
+
+		next.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean hasMatch = false;
+				for (String risp : domandaScelta.getRisposte()) {
+					if (risp.equalsIgnoreCase(edit.getText().toString())) {
+						hasMatch = true;
+						break;
+					}
+				}
+				if (hasMatch) {
+					Toast.makeText(getContext(), "Risposta esatta", Toast.LENGTH_SHORT).show();
+					mListener.onFragmentEnd(new FragmentData(Quiz6Fragment.super.getFragmentId(), null, true, timeStart, System.currentTimeMillis()));
+				} else {
+					Toast.makeText(getContext(), "Risposta errata", Toast.LENGTH_SHORT).show();
+					mListener.onFragmentEnd(new FragmentData(Quiz6Fragment.super.getFragmentId(), null, false, timeStart, System.currentTimeMillis()));
+				}
+			}
+		});
+
+		timeStart = System.currentTimeMillis();
 		return v;
 	}
 
@@ -170,6 +233,30 @@ public class Quiz6Fragment extends FragmentTemplate {
 		float x = event.getX(0) + event.getX(1);
 		float y = event.getY(0) + event.getY(1);
 		point.set(x / 2, y / 2);
+	}
+
+	private int counter = 0;
+
+	private class CustomTimer extends TimerTask {
+		@Override
+		public void run() {
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					counter++;
+					progressBar.setProgress(counter);
+
+					tvTimer.setText((30 - counter) + "");
+
+					if (counter >= REQUEST_TIMER) {
+						timer.cancel();
+
+						tvTimer.setText("0 - Tempo scaduto!");
+						isTimeExpired = true;
+					}
+				}
+			});
+		}
 	}
 
 }
