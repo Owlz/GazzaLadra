@@ -94,7 +94,7 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 		camera = findViewById(R.id.camera);
 		camera.setSessionType(SessionType.VIDEO);
 		camera.setFacing(Facing.FRONT);
-		camera.setVideoQuality(VideoQuality.HIGHEST);
+		camera.setVideoQuality(VideoQuality.MAX_720P);
 		camera.addCameraListener(new CameraListener() {
 			@Override
 			public void onVideoTaken(File video) {
@@ -230,11 +230,12 @@ public class QuizActivity extends TemplateActivity implements IntermediateFragme
 				for (MoveEventData m : QuizActivity.super.getMoveEventDataCollected()) {
 					AsyncFileWriter.write(m.toStringArray(), QuizActivity.super.getSessionFolder(), "moveEvent");
 				}
-
+				int indexMomentaneo = 0;
 				for (FragmentData r : fragmentResultData) {
+					indexMomentaneo++;
 					AsyncFileWriter.write(new String[]{
 							r.idFragment,
-							"" + fragmentIndex,
+							"" + indexMomentaneo,
 							"" + r.timeStart,
 							"" + r.timeEnd,
 							"" + r.isComplete,

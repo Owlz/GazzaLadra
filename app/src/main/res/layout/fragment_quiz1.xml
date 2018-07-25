@@ -8,11 +8,11 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textColor="#000"
+		android:layout_alignParentTop="true"
 		android:layout_centerHorizontal="true"
-		android:layout_above="@id/progressBar"
+		android:layout_marginTop="22dp"
 		android:text="Scrivi il colore della parola"
-		android:layout_marginBottom="25dp"
+		android:textColor="#000"
 		android:textStyle="bold|italic"/>
 
 	<ProgressBar
@@ -55,7 +55,7 @@
 
 		<com.rengwuxian.materialedittext.MaterialEditText
 			android:id="@+id/edit"
-			android:layout_width="200dp"
+			android:layout_width="170dp"
 			android:layout_height="wrap_content"
 			android:layout_alignBaseline="@+id/buttonConferma"
 			android:layout_alignParentStart="true"
@@ -67,11 +67,11 @@
 			android:layout_margin="20dp"/>
 
 		<Button
-			android:layout_margin="20dp"
-			android:layout_gravity="center"
 			android:id="@+id/buttonConferma"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_margin="20dp"
 			android:text="Conferma"/>
 	</LinearLayout>
 

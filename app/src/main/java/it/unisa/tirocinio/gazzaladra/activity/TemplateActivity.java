@@ -260,16 +260,12 @@ public abstract class TemplateActivity extends AppCompatActivity implements Sens
 		);
 		rawTouchDataCollected.add(rtd);
 
-		viewClicked = null;
-		millisecOffset = -1;
-		millisecTouchEventStart = -1;
-
 		return super.onTouchEvent(event);
 	}
 
 	// we get info about the widget clicked
 	public boolean widgetTouchDispatcher(View v, MotionEvent event) {
-
+		viewClicked = null;
 		if (!(v instanceof ViewGroup)) {
 //			String[] a = v.getClass().getName().split("\\.");
 //			viewClicked = a[a.length-1];

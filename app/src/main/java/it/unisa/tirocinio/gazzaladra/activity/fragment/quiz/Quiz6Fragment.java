@@ -38,7 +38,7 @@ public class Quiz6Fragment extends FragmentTemplate {
 	private boolean isTimeExpired;
 	private ProgressBar progressBar;
 	private TextView tvTimer;
-	private static final int REQUEST_TIMER = 15;
+	private static final int REQUEST_TIMER = 40;
 	private Timer timer;
 	private Handler handler;
 	private long timeStart;
@@ -115,7 +115,7 @@ public class Quiz6Fragment extends FragmentTemplate {
 
 		progressBar = v.findViewById(R.id.progressBar);
 		tvTimer = v.findViewById(R.id.countdown_tv);
-		tvTimer.setText(30 + "");
+		tvTimer.setText(REQUEST_TIMER + "");
 		progressBar.setProgress(0);
 		progressBar.setMax(REQUEST_TIMER);
 		timer.scheduleAtFixedRate(task, 500, 1000);
@@ -265,7 +265,7 @@ public class Quiz6Fragment extends FragmentTemplate {
 					counter++;
 					progressBar.setProgress(counter);
 
-					tvTimer.setText((30 - counter) + "");
+					tvTimer.setText((REQUEST_TIMER - counter) + "");
 
 					if (counter >= REQUEST_TIMER) {
 						timer.cancel();

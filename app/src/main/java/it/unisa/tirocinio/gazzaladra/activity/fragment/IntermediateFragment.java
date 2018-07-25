@@ -60,7 +60,6 @@ public class IntermediateFragment extends FragmentTemplate {
 			scenario = savedInstanceState.getString("scenario");
 		}
 
-		//todo: decidere se tutti i fragment generano click o solo i "topic"
 		return v;
 	}
 
